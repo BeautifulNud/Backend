@@ -1,5 +1,5 @@
 ---
-name: FEATURE
+name: FEAT:제목을 입력해주세요
 about: Feature 작업 시 입력해주세요
 title: ''
 labels: ''

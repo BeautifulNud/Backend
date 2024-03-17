@@ -1,5 +1,5 @@
 ---
-name: Bug
+name: Bug:버그를 입력해주세요
 about: Bug 작업 시 입력해주세요
 title: ''
 labels: ''
