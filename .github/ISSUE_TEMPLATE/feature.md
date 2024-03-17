@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: Feature 작업 시 입력해주세요
-title: "[Feat]"
+title: 'Feat :'
 labels: ''
 assignees: ''
 
