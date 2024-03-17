@@ -1,7 +1,7 @@
 ---
-name: FEAT:제목을 입력해주세요
+name: Feature
 about: Feature 작업 시 입력해주세요
-title: ''
+title: "[Feat]"
 labels: ''
 assignees: ''
 

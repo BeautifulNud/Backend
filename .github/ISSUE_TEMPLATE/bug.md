@@ -1,7 +1,7 @@
 ---
-name: Bug:버그를 입력해주세요
+name: Bug
 about: Bug 작업 시 입력해주세요
-title: ''
+title: "[Bug]"
 labels: ''
 assignees: ''
 
