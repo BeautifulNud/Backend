@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem extends BaseTimeEntity {
@@ -21,11 +22,11 @@ public class OrderItem extends BaseTimeEntity {
     private Item item;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private CustomerOrder customerOrder;
 
     @Builder
-    public OrderItem(Item item, Order order) {
+    public OrderItem(Item item, CustomerOrder customerOrder) {
         this.item = item;
-        this.order = order;
+        this.customerOrder = customerOrder;
     }
 }
