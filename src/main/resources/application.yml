@@ -1,9 +1,11 @@
 spring:
+  profiles:
+    include: aws
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ggudock.czuecm2esyjy.ap-northeast-2.rds.amazonaws.com:3306/?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: root1234
+    url: jdbc:mysql://database-1.cbe80su8qz7k.ap-northeast-2.rds.amazonaws.com:3306/?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: admin1234
   jpa:
     hibernate:
       ddl-auto: update
