@@ -9,9 +9,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order extends BaseTimeEntity {
+public class CustomerOrder extends BaseTimeEntity {
     @Id
     @Column(name ="order_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,7 @@ public class Order extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Order(int totalPrice, User user) {
+    public CustomerOrder(int totalPrice, User user) {
         this.totalPrice = totalPrice;
         this.user = user;
     }
