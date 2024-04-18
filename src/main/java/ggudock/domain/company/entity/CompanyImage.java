@@ -1,7 +1,6 @@
 package ggudock.domain.company.entity;
 
 import ggudock.util.BaseTimeEntity;
-import ggudock.validator.customvalid.S3Valid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -18,7 +17,6 @@ public class CompanyImage extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @S3Valid
     private String picture;
 
     @ManyToOne(fetch = FetchType.LAZY)

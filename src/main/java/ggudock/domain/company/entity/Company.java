@@ -1,9 +1,6 @@
 package ggudock.domain.company.entity;
 
 import ggudock.util.BaseTimeEntity;
-import ggudock.validator.customvalid.AddressValid;
-import ggudock.validator.customvalid.DescriptionValid;
-import ggudock.validator.customvalid.PhoneValid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,11 +20,11 @@ public class Company extends BaseTimeEntity {
     @Column(name = "company_name")
     @NotNull
     private String name;
-    @PhoneValid
+
     private String telNumber;
-    @DescriptionValid
+
     private String description;
-    @AddressValid
+
     private String address;
     private int holiday;
 

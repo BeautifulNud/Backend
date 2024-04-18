@@ -1,7 +1,6 @@
 package ggudock.domain.user.entity;
 
 import ggudock.util.BaseTimeEntity;
-import ggudock.validator.customvalid.AddressValid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -18,17 +17,11 @@ public class Address extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @AddressValid
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Builder
-    public Address(String address) {
-        this.address = address;
-    }
 
     @Builder
     public Address(String address, User user) {

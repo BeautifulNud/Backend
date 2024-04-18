@@ -3,9 +3,6 @@ package ggudock.domain.review.entity;
 import ggudock.domain.item.entity.Item;
 import ggudock.domain.user.entity.User;
 import ggudock.util.BaseTimeEntity;
-import ggudock.validator.customvalid.DescriptionValid;
-import ggudock.validator.customvalid.RatingValid;
-import ggudock.validator.customvalid.TitleValid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,14 +20,11 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @NotNull
-    @TitleValid
     private String title;
     @NotNull
-    @DescriptionValid
     private String content;
 
     @NotNull
-    @RatingValid
     private Long rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
