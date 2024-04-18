@@ -2,6 +2,8 @@ package ggudock.domain.item.entity;
 
 import ggudock.domain.company.entity.Company;
 import ggudock.util.BaseTimeEntity;
+import ggudock.validator.customvalid.DescriptionValid;
+import ggudock.validator.customvalid.RatingValid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,8 +25,10 @@ public class Item extends BaseTimeEntity {
     private String name;
     @NotNull
     private int price;
+    @DescriptionValid
     private String description;
     private String plan;
+    @RatingValid
     private long rating;
 
     @ManyToOne

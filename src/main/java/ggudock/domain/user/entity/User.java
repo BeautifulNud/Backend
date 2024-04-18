@@ -1,6 +1,9 @@
 package ggudock.domain.user.entity;
 
 import ggudock.util.BaseTimeEntity;
+import ggudock.validator.customvalid.EmailValid;
+import ggudock.validator.customvalid.NicknameValid;
+import ggudock.validator.customvalid.S3Valid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -20,9 +23,12 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String name;
     @NotNull
+    @NicknameValid
     private String nickname;
+    @S3Valid
     private String picture;
     @NotNull
+    @EmailValid
     private String email;
 
     @Builder
