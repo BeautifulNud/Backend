@@ -1,6 +1,6 @@
 package ggudock.domain.item.application;
 
-import ggudock.domain.item.dao.ItemRepository;
+import ggudock.domain.item.repository.ItemRepository;
 import ggudock.domain.item.entity.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

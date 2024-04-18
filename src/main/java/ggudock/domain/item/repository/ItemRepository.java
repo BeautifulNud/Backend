@@ -1,4 +1,4 @@
-package ggudock.domain.item.dao;
+package ggudock.domain.item.repository;
 
 import ggudock.domain.item.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
