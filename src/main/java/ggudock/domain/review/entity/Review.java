@@ -23,6 +23,8 @@ public class Review extends BaseTimeEntity {
     private String title;
     @NotNull
     private String content;
+
+    @NotNull
     private Long rating;
 
     @ManyToOne(fetch = FetchType.LAZY)

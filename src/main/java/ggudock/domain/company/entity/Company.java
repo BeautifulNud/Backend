@@ -20,8 +20,11 @@ public class Company extends BaseTimeEntity {
     @Column(name = "company_name")
     @NotNull
     private String name;
+
     private String telNumber;
+
     private String description;
+
     private String address;
     private int holiday;
 

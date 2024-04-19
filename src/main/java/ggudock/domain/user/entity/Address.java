@@ -24,11 +24,6 @@ public class Address extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Address(String address) {
-        this.address = address;
-    }
-
-    @Builder
     public Address(String address, User user) {
         this.address = address;
         this.user = user;
