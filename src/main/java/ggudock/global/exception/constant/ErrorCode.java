@@ -1,4 +1,4 @@
-package ggudock.config.exception.constant;
+package ggudock.global.exception.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

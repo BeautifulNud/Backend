@@ -1,9 +1,9 @@
-package ggudock.config.exception;
+package ggudock.global.exception;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static ggudock.config.exception.constant.ErrorCode.UNKNOWN;
+import static ggudock.global.exception.constant.ErrorCode.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 

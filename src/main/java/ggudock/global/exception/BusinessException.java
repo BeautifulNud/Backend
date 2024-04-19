@@ -1,6 +1,6 @@
-package ggudock.config.exception;
+package ggudock.global.exception;
 
-import ggudock.config.exception.constant.ErrorCode;
+import ggudock.global.exception.constant.ErrorCode;
 import lombok.Getter;
 
 @Getter
