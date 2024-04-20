@@ -1,5 +1,7 @@
 package ggudock.domain.user.entity;
 
+import ggudock.domain.user.model.Role;
+import ggudock.domain.user.model.ProviderType;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,20 +18,39 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="user_name")
+
+    @Column(name = "user_name")
     @NotNull
-    private String name;
+    private String username;
+
     @NotNull
     private String nickname;
+
     private String picture;
+
     @NotNull
     private String email;
 
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_provider", nullable = false)
+    private ProviderType providerType;
+
     @Builder
-    public User(String name, String nickname, String picture, String email) {
-        this.name = name;
+    public User(Long id, String username, String nickname, String picture, String email, String phoneNumber, Role role, ProviderType providerType) {
+        this.id = id;
+        this.username = username;
         this.nickname = nickname;
         this.picture = picture;
         this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.providerType = providerType;
     }
 }
