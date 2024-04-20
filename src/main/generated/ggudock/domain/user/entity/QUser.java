@@ -35,7 +35,13 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final StringPath phoneNumber = createString("phoneNumber");
+
     public final StringPath picture = createString("picture");
+
+    public final EnumPath<ggudock.domain.user.model.ProviderType> providerType = createEnum("providerType", ggudock.domain.user.model.ProviderType.class);
+
+    public final EnumPath<ggudock.domain.user.model.Role> role = createEnum("role", ggudock.domain.user.model.Role.class);
 
     public QUser(String variable) {
         super(User.class, forVariable(variable));
