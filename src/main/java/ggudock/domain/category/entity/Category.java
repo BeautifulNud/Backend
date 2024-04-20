@@ -1,6 +1,5 @@
 package ggudock.domain.category.entity;
 
-import ggudock.domain.subscription.entity.Subscription;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,13 +22,8 @@ public class Category extends BaseTimeEntity {
     @Column(name="category_name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscription_id")
-    private Subscription subscription;
-
     @Builder
-    public Category(String name,Subscription subscription){
+    public Category(String name){
         this.name = name;
-        this.subscription = subscription;
     }
 }
