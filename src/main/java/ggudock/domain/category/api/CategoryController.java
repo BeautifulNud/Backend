@@ -18,6 +18,7 @@ public class CategoryController {
     public ResponseEntity<?> saveCategory(SaveForm saveForm) {
         Category category = Category.builder()
                 .name(saveForm.getName())
+                .icon(saveForm.getIcon())
                 .build();
         return categoryService.save(category);
     }

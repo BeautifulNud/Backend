@@ -21,7 +21,6 @@ class CategoryServiceTest {
     CategoryService categoryService;
     Category category1;
     Category category2;
-    Category category3;
 
     @BeforeEach
     public void setUp() {
@@ -29,17 +28,15 @@ class CategoryServiceTest {
         //given
         category1 = Category.builder()
                 .name("초밥")
+                .icon("/src/adadasd")
                 .build();
         category2 = Category.builder()
                 .name("김밥")
-                .build();
-        category3 = Category.builder()
-                .name("셀러드")
+                .icon("/src/adadasd")
                 .build();
         //when
         categoryService.save(category1);
         categoryService.save(category2);
-        categoryService.save(category3);
     }
 
     @Test
@@ -74,6 +71,7 @@ class CategoryServiceTest {
         //given
         CategoryDto categoryDto = CategoryDto.builder()
                 .name(category2.getName())
+                .icon(category2.getIcon())
                 .build();
         //when
         ResponseEntity<?> responseEntity = categoryService.getCategory(category2.getId());

@@ -53,6 +53,7 @@ public class CategoryService {
     private CategoryDto getCategoryDto(Category category) {
         return CategoryDto.builder()
                 .name(category.getName())
+                .icon(category.getIcon())
                 .build();
     }
 }

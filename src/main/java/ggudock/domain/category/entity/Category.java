@@ -22,8 +22,12 @@ public class Category extends BaseTimeEntity {
     @Column(name="category_name")
     private String name;
 
+    @NotNull
+    private String icon;
+
     @Builder
-    public Category(String name){
+    public Category(String name,String icon ){
         this.name = name;
+        this.icon = icon;
     }
 }
