@@ -12,8 +12,10 @@ import lombok.Data;
 public class CategoryDto {
 
     private String name;
+    private String icon;
 
     public CategoryDto(Category category) {
         this.name = category.getName();
+        this.icon = category.getIcon();
     }
 }
