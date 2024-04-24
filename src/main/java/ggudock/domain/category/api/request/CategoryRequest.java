@@ -1,11 +1,10 @@
 package ggudock.domain.category.api.dto;
 
-import ggudock.domain.subscription.entity.Subscription;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class SaveForm {
+public class CategoryRequest {
 
     @NotBlank
     private String name;
