@@ -1,4 +1,4 @@
-package ggudock.domain.category.application.dto;
+package ggudock.domain.category.application.response;
 
 import ggudock.domain.category.entity.Category;
 import lombok.AllArgsConstructor;
