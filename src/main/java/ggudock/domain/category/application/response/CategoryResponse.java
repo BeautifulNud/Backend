@@ -1,7 +1,6 @@
-package ggudock.domain.category.application.dto;
+package ggudock.domain.category.application.response;
 
 import ggudock.domain.category.entity.Category;
-import ggudock.domain.subscription.entity.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +8,12 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class CategoryDto {
+public class CategoryResponse {
 
     private String name;
     private String icon;
 
-    public CategoryDto(Category category) {
+    public CategoryResponse(Category category) {
         this.name = category.getName();
         this.icon = category.getIcon();
     }

@@ -56,8 +56,13 @@ public class LogAspect {
         log.info("====================Response info====================");
         log.info("Method Name : {}", method.getName());
 
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
+        if(returnObj != null) {
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+        }else{
+            log.info("return type = null");
+            log.info("return value = null");
+        }
     }
 
     // JoinPoint로 메서드 정보 가져오기

@@ -1,9 +1,9 @@
 package ggudock.domain.category.application;
 
-import ggudock.domain.category.application.dto.CategoryDto;
+import ggudock.domain.category.api.request.CategoryRequest;
+import ggudock.domain.category.application.response.CategoryResponse;
 import ggudock.domain.category.entity.Category;
 import ggudock.domain.category.repository.CategoryRepository;
-import ggudock.global.exception.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,41 +19,47 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public ResponseEntity<?> save(Category category){
+    public CategoryResponse saveCategory(CategoryRequest categoryRequest){
+        Category category = createCategory(categoryRequest);
         categoryRepository.save(category);
-        return new ResponseEntity<>(null,HttpStatusCode.valueOf(200));
+        return getDetail(category.getId());
     }
 
-    public ResponseEntity<?> delete(Long categoryId){
-        if(categoryRepository.findById(categoryId).orElse(null)==null)
-            return ResponseEntity.status(ErrorCode.NOT_FOUND_CATEGORY.getCode()).body(ErrorCode.NOT_FOUND_CATEGORY);
-        Category category = categoryRepository.findCategoryById(categoryId);
-        categoryRepository.delete(category);
+    public void deleteCategory(Long categoryId){
+        categoryRepository.deleteById(categoryId);
+        new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
+    }
 
-        return new ResponseEntity<>(null,HttpStatusCode.valueOf(200));
+
+    @Transactional(readOnly = true)
+    public Category getCategory(Long categoryId){
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("요청하신 카테고리를 찾을수 없습니다."));
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getCategory(Long categoryId){
-        if(categoryRepository.findById(categoryId).orElse(null)==null)
-            return ResponseEntity.status(ErrorCode.NOT_FOUND_CATEGORY.getCode()).body(ErrorCode.NOT_FOUND_CATEGORY);
-        Category category = categoryRepository.findCategoryById(categoryId);
-        CategoryDto categoryDto = getCategoryDto(category);
-
-        return new ResponseEntity<>(categoryDto,HttpStatusCode.valueOf(200));
+    public List<CategoryResponse> getCategoryList(){
+        return categoryRepository.findAll().stream()
+                .map(CategoryResponse::new)
+                .toList();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> getCategoryList(){
-        List<Category> categoryList = categoryRepository.findAll();
-        List<CategoryDto> categoryDtoList = categoryList.stream().map(CategoryDto::new).toList();
-        return new ResponseEntity<>(categoryDtoList,HttpStatusCode.valueOf(200));
+    public CategoryResponse getDetail(Long categoryId){
+        return createResponse(categoryId);
     }
 
-    private CategoryDto getCategoryDto(Category category) {
-        return CategoryDto.builder()
+    private CategoryResponse createResponse(Long categoryId) {
+        Category category = getCategory(categoryId);
+        return CategoryResponse.builder()
                 .name(category.getName())
                 .icon(category.getIcon())
+                .build();
+    }
+
+    private static Category createCategory(CategoryRequest categoryRequest) {
+        return Category.builder()
+                .name(categoryRequest.getName())
+                .icon(categoryRequest.getIcon())
                 .build();
     }
 }
