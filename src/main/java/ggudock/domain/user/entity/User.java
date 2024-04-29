@@ -1,7 +1,8 @@
 package ggudock.domain.user.entity;
 
-import ggudock.domain.user.model.Role;
-import ggudock.domain.user.model.ProviderType;
+import ggudock.config.oauth.entity.Role;
+import ggudock.config.oauth.entity.ProviderType;
+import ggudock.domain.user.dto.SignUpDto;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -26,10 +27,12 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String nickname;
 
-    private String picture;
+    private String password;
 
     @NotNull
     private String email;
+
+    private String imageUrl;
 
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
@@ -43,14 +46,20 @@ public class User extends BaseTimeEntity {
     private ProviderType providerType;
 
     @Builder
-    public User(Long id, String username, String nickname, String picture, String email, String phoneNumber, Role role, ProviderType providerType) {
+    public User(Long id, String username, String nickname, String password, String email, String imageUrl, String phoneNumber, Role role, ProviderType providerType) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
-        this.picture = picture;
+        this.password = password;
         this.email = email;
+        this.imageUrl = imageUrl;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.providerType = providerType;
+    }
+
+    public void signupUser(SignUpDto dto) {
+        this.nickname = dto.getNickname();
+        this.phoneNumber = dto.getPhoneNumber();
     }
 }
