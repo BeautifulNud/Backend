@@ -1,8 +1,8 @@
 package ggudock.domain.item.entity;
 
 import ggudock.domain.cart.entity.Cart;
-import ggudock.domain.category.entity.Category;
 import ggudock.domain.company.entity.Company;
+import ggudock.domain.item.model.ItemCategory;
 import ggudock.domain.order.OrderItem;
 import ggudock.domain.review.entity.Review;
 import ggudock.domain.subscription.entity.Subscription;
@@ -21,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseTimeEntity {
     @Id
-    @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,12 +32,12 @@ public class Item extends BaseTimeEntity {
     private int salePercent;
     private String description;
     private String plan;
-    private long rating;
+    private float rating;
     private String thumbnail;
+    private long views;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Enumerated(EnumType.STRING)
+    private ItemCategory category;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
@@ -54,7 +53,7 @@ public class Item extends BaseTimeEntity {
     private List<Review> reviewList;
 
     @Builder
-    public Item(Long id, String name, int price, int salePercent, String description, String plan, long rating, String thumbnail, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<OrderItem> orderItemList, List<Review> reviewList) {
+    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, ItemCategory category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<OrderItem> orderItemList, List<Review> reviewList) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -63,6 +62,7 @@ public class Item extends BaseTimeEntity {
         this.plan = plan;
         this.rating = rating;
         this.thumbnail = thumbnail;
+        this.views = views;
         this.category = category;
         this.company = company;
         this.itemImageList = itemImageList;
@@ -73,6 +73,14 @@ public class Item extends BaseTimeEntity {
     }
 
     public int getSalePrice() {
-        return this.price * (100 - this.salePercent);
+        return this.price / 100 * (100 - this.salePercent);
+    }
+
+    public boolean isSameCategory(String category) {
+        return this.category.getName().equals(category);
+    }
+
+    public void raiseViews() {
+        this.views++;
     }
 }

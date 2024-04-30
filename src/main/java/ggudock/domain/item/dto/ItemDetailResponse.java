@@ -11,8 +11,9 @@ public record ItemDetailResponse(
     int salePrice,   // item-price 에서 계산
     String thumbnail,
     String description,
+    long view,
     boolean wish,    // cart
-    long rating,
+    float rating,
     CompanyDto companyDto // company
 ) {
     @Builder

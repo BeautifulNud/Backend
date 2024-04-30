@@ -7,11 +7,11 @@ import ggudock.domain.company.entity.Company;
 import ggudock.domain.item.dto.ItemDetailResponse;
 import ggudock.domain.item.entity.Item;
 import ggudock.domain.item.repository.ItemRepository;
+import ggudock.domain.item.strategy.OrderByStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ggudock.domain.cart.model.Category.DIB;
 
@@ -24,7 +24,22 @@ public class ItemService {
         return itemRepository.findAll().stream()
                 .map(Item::getId)
                 .map(this::getDetail)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public List<ItemDetailResponse> getCategoryList(String category) {
+        return itemRepository.findAll().stream()
+                .filter(item -> item.isSameCategory(category))
+                .map(Item::getId)
+                .map(this::getDetail)
+                .toList();
+    }
+
+    public List<ItemDetailResponse> getListOrderBy(OrderByStrategy orderByStrategy) {
+        return orderByStrategy.findList(itemRepository).stream()
+                .map(Item::getId)
+                .map(this::getDetail)
+                .toList();
     }
 
     public ItemDetailResponse getDetail(Long itemId) {
@@ -44,6 +59,7 @@ public class ItemService {
                 .salePrice(item.getSalePrice())
                 .thumbnail(item.getThumbnail())
                 .description(item.getDescription())
+                .view(item.getViews())
                 .wish(cart.getCategory().equals(DIB))
                 .rating(item.getRating())
                 .companyDto(CompanyDto.EntityToDto(company))
@@ -51,13 +67,13 @@ public class ItemService {
     }
 
     private Item getItem(Long id) {
-        return itemRepository.findByItemId(id)
+        return itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("요청하신 상품을 찾을 수 없습니다."));
     }
 
     // TODO repo 개발 시 연결
     private Cart getCart(Long id) {
-        return Cart.builder().build();
+        return Cart.builder().category(DIB).build();
     }
 
     // TODO repo 개발 시 연결

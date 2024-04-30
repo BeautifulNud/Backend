@@ -24,6 +24,10 @@ public class QItem extends EntityPathBase<Item> {
 
     public final ggudock.util.QBaseTimeEntity _super = new ggudock.util.QBaseTimeEntity(this);
 
+    public final ListPath<ggudock.domain.cart.entity.Cart, ggudock.domain.cart.entity.QCart> cartList = this.<ggudock.domain.cart.entity.Cart, ggudock.domain.cart.entity.QCart>createList("cartList", ggudock.domain.cart.entity.Cart.class, ggudock.domain.cart.entity.QCart.class, PathInits.DIRECT2);
+
+    public final EnumPath<ggudock.domain.item.model.ItemCategory> category = createEnum("category", ggudock.domain.item.model.ItemCategory.class);
+
     public final ggudock.domain.company.entity.QCompany company;
 
     //inherited
@@ -33,16 +37,30 @@ public class QItem extends EntityPathBase<Item> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<ItemImage, QItemImage> itemImageList = this.<ItemImage, QItemImage>createList("itemImageList", ItemImage.class, QItemImage.class, PathInits.DIRECT2);
+
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
     public final StringPath name = createString("name");
 
+    public final ListPath<ggudock.domain.order.OrderItem, ggudock.domain.order.QOrderItem> orderItemList = this.<ggudock.domain.order.OrderItem, ggudock.domain.order.QOrderItem>createList("orderItemList", ggudock.domain.order.OrderItem.class, ggudock.domain.order.QOrderItem.class, PathInits.DIRECT2);
+
     public final StringPath plan = createString("plan");
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
-    public final NumberPath<Long> rating = createNumber("rating", Long.class);
+    public final NumberPath<Float> rating = createNumber("rating", Float.class);
+
+    public final ListPath<ggudock.domain.review.entity.Review, ggudock.domain.review.entity.QReview> reviewList = this.<ggudock.domain.review.entity.Review, ggudock.domain.review.entity.QReview>createList("reviewList", ggudock.domain.review.entity.Review.class, ggudock.domain.review.entity.QReview.class, PathInits.DIRECT2);
+
+    public final NumberPath<Integer> salePercent = createNumber("salePercent", Integer.class);
+
+    public final ListPath<ggudock.domain.subscription.entity.Subscription, ggudock.domain.subscription.entity.QSubscription> subscriptionList = this.<ggudock.domain.subscription.entity.Subscription, ggudock.domain.subscription.entity.QSubscription>createList("subscriptionList", ggudock.domain.subscription.entity.Subscription.class, ggudock.domain.subscription.entity.QSubscription.class, PathInits.DIRECT2);
+
+    public final StringPath thumbnail = createString("thumbnail");
+
+    public final NumberPath<Long> views = createNumber("views", Long.class);
 
     public QItem(String variable) {
         this(Item.class, forVariable(variable), INITS);
