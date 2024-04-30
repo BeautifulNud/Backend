@@ -26,12 +26,37 @@ public class JwtTokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;          // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L;    // 2주
+    private static final int REFRESH_TOKEN_EXPIRE_TIME_COOKIE = Integer.MAX_VALUE;
 
     private final Key key;
 
     public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public TokenInfo generateToken(String id, String role) {
+        long now = (new Date()).getTime();
+        // Access Token 생성
+        String accessToken = Jwts.builder()
+                .setSubject(id)
+                .claim(AUTHORITIES_KEY, role)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
+                .compact();
+
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .compact();
+
+        return TokenInfo.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
+                .build();
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
@@ -97,17 +122,8 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Long getExpiration(String accessToken) {
-        // accessToken 남은 유효시간
-        Date expiration = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody()
-                .getExpiration();
-        // 현재 시간
-        long now = new Date().getTime();
-        return (expiration.getTime() - now);
+    public static int getRefreshTokenExpireTimeCookie() {
+        return REFRESH_TOKEN_EXPIRE_TIME_COOKIE;
     }
 
     private Claims parseClaims(String accessToken) {
@@ -122,5 +138,16 @@ public class JwtTokenProvider {
         }
     }
 
-
+    public Long getExpiration(String accessToken) {
+        // accessToken 남은 유효시간
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody()
+                .getExpiration();
+        // 현재 시간
+        long now = new Date().getTime();
+        return (expiration.getTime() - now);
+    }
 }

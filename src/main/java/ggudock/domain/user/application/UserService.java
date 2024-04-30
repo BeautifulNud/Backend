@@ -23,7 +23,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JwtTokenProvider tokenProvider;
 
     @Transactional
     public UserResponse signup(Long userId, SignUpDto dto) {
@@ -42,12 +41,12 @@ public class UserService {
     }
 
     public UserResponse findUserByNickname(String nickname) {
-        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new NotFoundException(nickname + "인 닉네임이 없습니다"));
+        User user = userRepository.findByNickname(nickname);
         return getUser(user);
     }
 
     public UserResponse findUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(username + "인 이름이 없습니다"));
+        User user = userRepository.findByUsername(username);
         return getUser(user);
     }
 

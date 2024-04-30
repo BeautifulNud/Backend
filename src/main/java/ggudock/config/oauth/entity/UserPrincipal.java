@@ -16,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails, OAuth2User {
     private final String email;
-    private final String nickname;
+    private final String username;
     private final String password;
     private final ProviderType providerType;
     private final Role roleType;
@@ -24,10 +24,10 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     private Map<String, Object> attributes;
 
     @Builder
-    public UserPrincipal(String email, String nickname, String password, ProviderType providerType, Role roleType,
+    public UserPrincipal(String email, String username, String password, ProviderType providerType, Role roleType,
                          Collection<GrantedAuthority> authorities, Map<String, Object> attributes) {
         this.email = email;
-        this.nickname = nickname;
+        this.username = username;
         this.password = password;
         this.providerType = providerType;
         this.roleType = roleType;
@@ -52,7 +52,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return nickname;
+        return username;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     public static UserPrincipal create(User user) {
         return new UserPrincipal(
                 user.getEmail(),
-                user.getNickname(),
+                user.getUsername(),
                 user.getPassword(),
                 user.getProviderType(),
                 Role.USER,

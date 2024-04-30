@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -47,13 +46,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //현재 진행중인 서비스를 구분하기 위해 문자열을 받음
         ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        Optional<User> checkUser = userRepository.findByEmail(userInfo.getEmail());
-        User savedUser = checkUser.orElseGet(() -> createUser(userInfo, providerType));
-
-        if (providerType != savedUser.getProviderType())
-            throw new OAuthProviderMissMatchException("이 계정은 " + providerType +
-                    " 소셜 로그인 회원가입 계정입니다. " + savedUser.getProviderType() + "로 다시 로그인해주세요.");
-
+        User savedUser = userRepository.findByEmail(userInfo.getEmail());
+        if (savedUser != null) {
+            if (userRepository.existsByEmailAndProviderType(userInfo.getEmail(), providerType))
+                throw new OAuthProviderMissMatchException("이 계정은 " + providerType +
+                        " 소셜 로그인 회원가입 계정입니다. 다시 로그인해주세요.");
+        } else {
+            savedUser = createUser(userInfo, providerType);
+        }
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
 

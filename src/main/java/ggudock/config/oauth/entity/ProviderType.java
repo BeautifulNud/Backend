@@ -6,6 +6,5 @@ import lombok.Getter;
 public enum ProviderType {
     GOOGLE,
     KAKAO,
-    NAVER,
-    LOCAL
+    NAVER
 }
