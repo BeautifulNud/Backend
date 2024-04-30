@@ -6,7 +6,6 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
     public NaverOAuth2UserInfo(Map<String, Object> attributes) {
         super(attributes);
-        System.out.println("네이버 데이터 : " + attributes);
     }
 
     @Override

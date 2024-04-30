@@ -18,8 +18,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -48,11 +46,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
         User savedUser = userRepository.findByEmail(userInfo.getEmail());
         if (savedUser != null) {
-            if (userRepository.existsByEmailAndProviderType(userInfo.getEmail(), providerType))
-                throw new OAuthProviderMissMatchException("이 계정은 " + providerType +
-                        " 소셜 로그인 회원가입 계정입니다. 다시 로그인해주세요.");
-        } else {
-            savedUser = createUser(userInfo, providerType);
+            if (!userRepository.existsByEmailAndProviderType(userInfo.getEmail(), providerType))
+                savedUser = createUser(userInfo, providerType);
         }
         return UserPrincipal.create(savedUser, user.getAttributes());
     }

@@ -32,7 +32,7 @@ import static ggudock.config.repository.OAuth2AuthorizationRequestBasedOnCookieR
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private String redirectUri = "localhost:8080";
+    private String redirectUri = "localhost:8080/login";
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
