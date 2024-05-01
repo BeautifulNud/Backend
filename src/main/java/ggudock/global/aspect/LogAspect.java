@@ -55,9 +55,12 @@ public class LogAspect {
         Method method = getMethod(joinPoint);
         log.info("====================Response info====================");
         log.info("Method Name : {}", method.getName());
-
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
+        if (returnObj != null) {
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+        } else{
+            log.info("this method not exist return value");
+        }
     }
 
     // JoinPoint로 메서드 정보 가져오기
