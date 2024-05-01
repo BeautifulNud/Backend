@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final CustomOAuth2UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final String[] allowedUrls = {"/", "/swagger-ui/**", "/login"};
+    private final String[] allowedUrls = {"/", "/css/**", "/js/** ", "/api/**", "/swagger-ui/**", "/api-docs/**", "/login"};
 
     @Bean
     public SecurityFilterChain filterChain(final @NotNull HttpSecurity http) throws Exception {
@@ -36,8 +36,7 @@ public class SecurityConfig {
         http.httpBasic(HttpBasicConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                // JWT를 사용하기 때문에 세션을 사용하지 않음
-                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(allowedUrls).permitAll()
                         .anyRequest().authenticated()
