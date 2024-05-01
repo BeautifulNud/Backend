@@ -5,7 +5,6 @@ import ggudock.config.oauth.OAuth2UserInfoFactory;
 import ggudock.config.oauth.entity.ProviderType;
 import ggudock.config.oauth.entity.Role;
 import ggudock.config.oauth.entity.UserPrincipal;
-import ggudock.config.oauth.exception.OAuthProviderMissMatchException;
 import ggudock.domain.user.entity.User;
 import ggudock.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +47,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (savedUser != null) {
             if (!userRepository.existsByEmailAndProviderType(userInfo.getEmail(), providerType))
                 savedUser = createUser(userInfo, providerType);
+            else{
+                log.info("이미 {}에 계정이 생성되어 있습니다.", savedUser.getProviderType());
+            }
         }
         return UserPrincipal.create(savedUser, user.getAttributes());
     }

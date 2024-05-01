@@ -22,13 +22,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long userId) {
-        userService.delete(userId);
-        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+    public ResponseEntity<Long> deleteUser(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.delete(userId), HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/findUser")
-    public ResponseEntity<?> searchUserById(@RequestParam Long userId) {
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> searchUserById(@PathVariable Long userId) {
         return new ResponseEntity<>(userService.findUserById(userId), HttpStatusCode.valueOf(200));
     }
 

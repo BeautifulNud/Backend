@@ -1,17 +1,10 @@
 package ggudock.domain.user.application;
 
-import ggudock.config.jwt.JwtTokenProvider;
-import ggudock.config.jwt.TokenInfo;
 import ggudock.domain.user.dto.SignUpDto;
 import ggudock.domain.user.dto.UserResponse;
 import ggudock.domain.user.entity.User;
 import ggudock.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -32,8 +25,9 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(Long userId) {
+    public Long delete(Long userId) {
         userRepository.delete(findUserById(userId));
+        return userId;
     }
 
     public User findUserById(Long userId) {
