@@ -28,8 +28,8 @@ public class UserController {
 
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> searchUserById(@PathVariable Long userId) {
-        return new ResponseEntity<>(userService.findUserById(userId), HttpStatusCode.valueOf(200));
+    public ResponseEntity<UserResponse> searchUserById(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getUser(userId), HttpStatusCode.valueOf(200));
     }
 
     @GetMapping("/findByUsername")
@@ -40,5 +40,10 @@ public class UserController {
     @GetMapping("/findByNickname")
     public ResponseEntity<UserResponse> searchUserByNickname(@RequestParam String nickname) {
         return new ResponseEntity<>(userService.findUserByNickname(nickname), HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> searchUserList() {
+        return new ResponseEntity<>(userService.findUserList(), HttpStatusCode.valueOf(200));
     }
 }
