@@ -1,8 +1,8 @@
 package ggudock.domain.item.entity;
 
 import ggudock.domain.cart.entity.Cart;
+import ggudock.domain.category.entity.Category;
 import ggudock.domain.company.entity.Company;
-import ggudock.domain.item.model.ItemCategory;
 import ggudock.domain.order.OrderItem;
 import ggudock.domain.review.entity.Review;
 import ggudock.domain.subscription.entity.Subscription;
@@ -36,8 +36,8 @@ public class Item extends BaseTimeEntity {
     private String thumbnail;
     private long views;
 
-    @Enumerated(EnumType.STRING)
-    private ItemCategory category;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
@@ -53,7 +53,7 @@ public class Item extends BaseTimeEntity {
     private List<Review> reviewList;
 
     @Builder
-    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, ItemCategory category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<OrderItem> orderItemList, List<Review> reviewList) {
+    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<OrderItem> orderItemList, List<Review> reviewList) {
         this.id = id;
         this.name = name;
         this.price = price;
