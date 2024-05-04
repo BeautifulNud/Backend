@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-public class SignUpDto {
+public class SignUpRequest {
     @NotBlank
     private String nickname;
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    public SignUpDto(String nickname, String phoneNumber) {
+    public SignUpRequest(String nickname, String phoneNumber) {
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
     }
