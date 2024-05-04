@@ -43,13 +43,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //현재 진행중인 서비스를 구분하기 위해 문자열을 받음
         ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        User savedUser = userRepository.findByEmail(userInfo.getEmail());
+        User savedUser = userRepository.findByEmailAndProviderType(userInfo.getEmail(), providerType);
+
         if (savedUser != null) {
-            if (!userRepository.existsByEmailAndProviderType(userInfo.getEmail(), providerType))
-                savedUser = createUser(userInfo, providerType);
-            else{
-                log.info("이미 {}에 계정이 생성되어 있습니다.", savedUser.getProviderType());
-            }
+            log.info("{} 계정으로 로그인합니다.", providerType);
+        } else {
+            savedUser = createUser(userInfo, providerType);
+            log.info("{}을 통해 계정을 생성했습니다.", savedUser.getProviderType());
         }
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
