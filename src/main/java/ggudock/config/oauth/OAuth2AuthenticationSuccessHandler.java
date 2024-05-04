@@ -1,5 +1,6 @@
 package ggudock.config.oauth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ggudock.config.jwt.JwtTokenProvider;
 import ggudock.config.jwt.TokenInfo;
 import ggudock.config.oauth.entity.ProviderType;
@@ -21,6 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static ggudock.config.jwt.JwtTokenProvider.getRefreshTokenExpireTimeCookie;
@@ -32,7 +35,7 @@ import static ggudock.config.repository.OAuth2AuthorizationRequestBasedOnCookieR
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private String redirectUri = "localhost:8080/login";
+    private String redirectUri = "localhost:8080/swagger-ui";
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -74,8 +77,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
         CookieUtil.addCookie(response, REFRESH_TOKEN, tokenInfo.getRefreshToken(), getRefreshTokenExpireTimeCookie());
 
-        log.info(tokenInfo.getAccessToken());
-        log.info(tokenInfo.getRefreshToken());
+        log.info("access token : {}", tokenInfo.getAccessToken());
+        log.info("refresh token : {}", tokenInfo.getRefreshToken());
+
+        try {
+            setTokenResponse(response, tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", tokenInfo.getAccessToken())
                 .queryParam("refreshToken", tokenInfo.getRefreshToken())
@@ -93,5 +103,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         return authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                 && authorizedUri.getPort() == clientRedirectUri.getPort();
+    }
+
+    private void setTokenResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", accessToken);
+        result.put("refreshToken", refreshToken);
+
+        response.getWriter().println(new ObjectMapper().writeValueAsString(result));
     }
 }

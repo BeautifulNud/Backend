@@ -10,17 +10,6 @@ import java.util.Optional;
 
 public class CookieUtil {
 
-    /*
-    쿠키에서 access_token을 가져오는 메소드
-     */
-    public static String getAccessToken(HttpServletRequest request) {
-        Optional<Cookie> cookie = getCookie(request, "access_token");
-        if (cookie.isEmpty()) {
-            return null;
-        }
-        return cookie.get().getValue();
-    }
-
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
@@ -34,17 +23,6 @@ public class CookieUtil {
         return Optional.empty();
     }
 
-    /*
-    httpOnly 권한을 풀고 access 토큰을 저장하기 위함
-     */
-    public static void addCookieForAccess(HttpServletResponse response, String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setHttpOnly(false);
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
-    }
-
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
@@ -53,17 +31,23 @@ public class CookieUtil {
         response.addCookie(cookie);
     }
 
+    // 실제로 삭제하는 방법은 없으므로 파라미터로 넘어온 키의 쿠키를 빈 값으로 바꾸고
+    // 만료 시간을 0으로 설정해 쿠키가 재생성 되자마자 만료 처리한다.
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (name.equals(cookie.getName())) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
+        if (cookies == null) {
+            return;
+        }
+
+        // 실제로 삭제하는 방법은 없으므로 파라미터로 넘어온 키의 쿠키를 빈 값으로 바꾸고
+        // 만료 시간을 0으로 설정해 쿠키가 재생성 되자마자 만료 처리한다.
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())) {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
             }
         }
     }
