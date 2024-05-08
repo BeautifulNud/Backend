@@ -4,7 +4,6 @@ import ggudock.config.jwt.JwtAuthenticationFilter;
 import ggudock.config.jwt.JwtTokenProvider;
 import ggudock.config.oauth.OAuth2AuthenticationFailureHandler;
 import ggudock.config.oauth.OAuth2AuthenticationSuccessHandler;
-
 import ggudock.config.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import ggudock.domain.user.application.CustomOAuth2UserService;
 import jakarta.validation.constraints.NotNull;
@@ -13,8 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,10 +48,10 @@ public class SecurityConfig {
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않음
 
                 // request 인증, 인가 설정
-                .authorizeHttpRequests(request ->
-                                request.requestMatchers(allowedUrls).permitAll()
-//                                .requestMatchers("/api/**").hasRole(Role.USER.name())
-                                        .anyRequest().authenticated()
+                .authorizeHttpRequests(request -> request
+//                        .requestMatchers(allowedUrls).permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")

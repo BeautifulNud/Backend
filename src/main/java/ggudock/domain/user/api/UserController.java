@@ -1,5 +1,6 @@
 package ggudock.domain.user.api;
 
+import ggudock.config.oauth.utils.SecurityUtil;
 import ggudock.domain.user.application.UserService;
 import ggudock.domain.user.dto.SignUpRequest;
 import ggudock.domain.user.dto.UserResponse;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -50,7 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/listByEmail")
-    public ResponseEntity<List<UserResponse>> searchUserListByEmail(String email) {
+    public ResponseEntity<List<UserResponse>> searchUserListByEmail() {
+        String email = SecurityUtil.getCurrentUsername().orElseThrow(()-> new NotFoundException("존재X"));
         return new ResponseEntity<>(userService.findUserListByEmail(email), HttpStatusCode.valueOf(200));
     }
 

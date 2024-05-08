@@ -48,8 +48,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             log.error("Response has already been committed. Unable to redirect to {}", targetUrl);
             return;
         }
-
+        // 인증 관련 설정값, 쿠키 제거
         clearAuthenticationAttributes(request, response);
+        // 리다이렉트
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
@@ -72,6 +73,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
         Role role = Role.USER;
 
+        //액세스 토큰, 리프레쉬 토큰을 저장한 token info 생성
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(userInfo.getEmail(), role.name());
 
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
@@ -86,6 +88,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new RuntimeException(e);
         }
 
+        // 액세스 토큰,리프레시 토큰을 패스에 추가
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", tokenInfo.getAccessToken())
                 .queryParam("refreshToken", tokenInfo.getRefreshToken())
