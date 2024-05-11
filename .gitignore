@@ -41,3 +41,6 @@ src/main/resources/application-aws.yml
 
 ### oauth 정보 ###
 src/main/resources/application-oauth.yml
+
+### redis 정보 ###
+src/main/resources/application-redis.yml
