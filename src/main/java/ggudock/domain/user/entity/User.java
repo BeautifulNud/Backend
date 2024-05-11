@@ -1,8 +1,8 @@
 package ggudock.domain.user.entity;
 
-import ggudock.config.oauth.entity.Role;
 import ggudock.config.oauth.entity.ProviderType;
-import ggudock.domain.user.dto.SignUpRequest;
+import ggudock.config.oauth.entity.Role;
+import ggudock.domain.user.dto.Request.UserRequest;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -59,7 +59,11 @@ public class User extends BaseTimeEntity {
         this.providerType = providerType;
     }
 
-    public void signupUser(SignUpRequest request) {
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void signupUser(UserRequest.SignUp request) {
         this.nickname = request.getNickname();
         this.phoneNumber = request.getPhoneNumber();
     }

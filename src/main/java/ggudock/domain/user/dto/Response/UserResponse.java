@@ -1,4 +1,4 @@
-package ggudock.domain.user.dto;
+package ggudock.domain.user.dto.Response;
 
 import lombok.Builder;
 

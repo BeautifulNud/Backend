@@ -2,18 +2,13 @@ package ggudock.domain.user.application;
 
 import ggudock.config.jwt.JwtTokenProvider;
 import ggudock.config.jwt.TokenInfo;
-import ggudock.domain.user.dto.SignUpRequest;
-import ggudock.domain.user.dto.UserResponse;
+import ggudock.domain.user.dto.Request.UserRequest;
+import ggudock.domain.user.dto.Response.UserResponse;
 import ggudock.domain.user.entity.User;
 import ggudock.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +29,16 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public UserResponse signup(Long userId, SignUpRequest dto) {
+    public UserResponse signup(Long userId, UserRequest.SignUp request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId + "가 없습니다"));
-        user.signupUser(dto);
+        user.signupUser(request);
+        return getUser(userId);
+    }
+
+    @Transactional
+    public UserResponse updateUsername(Long userId, String username) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId + "가 없습니다"));
+        user.updateUsername(username);
         return getUser(userId);
     }
 
@@ -76,15 +78,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-//    public UserResponse getUserWithAuthorities(String username) {
-//        return createResponse((Objects.requireNonNull(userRepository.findOneWithAuthoritiesByUsername(username).orElse(null))));
-//    }
-//
-//    // 현재 유저(SecurityContext) 객체의 권한정보를 가져옴
-//    public UserResponse getMyUserWithAuthorities() {
-//        return createResponse(Objects.requireNonNull(SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithAuthoritiesByUsername).orElse(null)));
-//    }
-
     public UserResponse getUser(Long userId) {
         return createResponse(userId);
     }
@@ -100,11 +93,12 @@ public class UserService {
                 .build();
     }
 
-    public ResponseEntity<?> logout(TokenInfo logout) {
+    @Transactional
+    public Boolean logout(UserRequest.Logout logout) {
         // 1. Access Token 검증
         if (!jwtTokenProvider.validateToken(logout.getAccessToken())) {
             log.info("유효하지 않은 요청입니다.");
-            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+            return false;
         }
 
         // 2. Access Token 에서 User email 을 가져옵니다.
@@ -119,15 +113,14 @@ public class UserService {
         // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
         Long expiration = jwtTokenProvider.getExpiration(logout.getAccessToken());
         redisTemplate.opsForValue().set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
-
-        return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+        return true;
     }
 
-    public ResponseEntity<TokenInfo> reissue(TokenInfo reissue) {
+    @Transactional
+    public TokenInfo reissue(UserRequest.Reissue reissue) {
         // 1. Refresh Token 검증
         if (!jwtTokenProvider.validateToken(reissue.getRefreshToken())) {
-            log.info("RefreshToken이 유효하지 않습니다.");
-            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+            throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
         }
 
         // 2. Access Token 에서 User email 을 가져옵니다.
@@ -136,14 +129,12 @@ public class UserService {
         // 3. Redis 에서 User email 을 기반으로 저장된 Refresh Token 값을 가져옵니다.
         Object o = redisTemplate.opsForValue().get("RT:" + authentication.getName());
         String refreshToken = (String) o;
-        // (추가) 로그아웃되어 Redis 에 RefreshToken 이 존재하지 않는 경우 처리
+        // (추가) 로그아웃되어 Redis에 RefreshToken이 존재하지 않는 경우 처리
         if (ObjectUtils.isEmpty(refreshToken)) {
-            log.info("RefreshToken이 유효하지 않습니다.");
-            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+            throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
         }
         if (!refreshToken.equals(reissue.getRefreshToken())) {
-            log.info("RefreshToken이 일치하지 않습니다.");
-            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+            throw new IllegalArgumentException("Refresh Token이 일치하지 않습니다.");
         }
 
         // 4. 새로운 토큰 생성
@@ -152,6 +143,6 @@ public class UserService {
         // 5. RefreshToken Redis 업데이트
         redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
         log.info("토큰 재발급에 성공했습니다.");
-        return new ResponseEntity<>(tokenInfo, HttpStatusCode.valueOf(400));
+        return tokenInfo;
     }
 }

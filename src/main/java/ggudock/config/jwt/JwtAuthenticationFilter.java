@@ -37,13 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
         // 1. Request Header 에서 JWT 토큰 추출
-        String token = getToken(request);
-        String requestURI = request.getRequestURI();
+        String token = resolveToken(request);
 
+        // log를 이용한 확인
+        log.info("[This is Verifying token!!]");
+        log.info(request.getRequestURL().toString());
         // 2. validateToken으로 토큰 유효성 검사
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            log.info("doFilter 메소드 실행");
-
             //Redis에 해당 accessToken logout 여부 확인
             String isLogout = redisTemplate.opsForValue().get(token);
 
@@ -52,14 +52,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }
         }
         chain.doFilter(request, response);
     }
 
     // Request Header에서 토큰 정보 추출
-    private String getToken(HttpServletRequest request) {
+    private String resolveToken(HttpServletRequest request) {
         String headerValue = request.getHeader(HEADER_AUTHORIZATION);
 
         if (headerValue == null) {
