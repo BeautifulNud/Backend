@@ -1,6 +1,5 @@
 package ggudock.config.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ggudock.config.jwt.JwtTokenProvider;
 import ggudock.config.jwt.TokenInfo;
 import ggudock.config.oauth.entity.ProviderType;
@@ -14,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -22,9 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static ggudock.config.jwt.JwtTokenProvider.getRefreshTokenExpireTimeCookie;
 import static ggudock.config.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -38,6 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private String redirectUri = "localhost:8080/swagger-ui";
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
     @Override
@@ -50,6 +50,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         // 인증 관련 설정값, 쿠키 제거
         clearAuthenticationAttributes(request, response);
+        log.info("onAuthenticationSucces 메서드");
         // 리다이렉트
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
@@ -76,17 +77,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         //액세스 토큰, 리프레쉬 토큰을 저장한 token info 생성
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(userInfo.getEmail(), role.name());
 
+        //redis에 refresh 토큰 저장
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
         CookieUtil.addCookie(response, REFRESH_TOKEN, tokenInfo.getRefreshToken(), getRefreshTokenExpireTimeCookie());
 
         log.info("access token : {}", tokenInfo.getAccessToken());
         log.info("refresh token : {}", tokenInfo.getRefreshToken());
 
-        try {
-            setTokenResponse(response, tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            setTokenResponse(response, tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         // 액세스 토큰,리프레시 토큰을 패스에 추가
         return UriComponentsBuilder.fromUriString(targetUrl)
@@ -108,14 +113,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 && authorizedUri.getPort() == clientRedirectUri.getPort();
     }
 
-    private void setTokenResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("accessToken", accessToken);
-        result.put("refreshToken", refreshToken);
-
-        response.getWriter().println(new ObjectMapper().writeValueAsString(result));
-    }
+//    private void setTokenResponse(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+//        response.setContentType("application/json;charset=UTF-8");
+//        response.setStatus(HttpServletResponse.SC_OK);
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("accessToken", accessToken);
+//        result.put("refreshToken", refreshToken);
+//
+//        response.getWriter().println(new ObjectMapper().writeValueAsString(result));
+//    }
 }

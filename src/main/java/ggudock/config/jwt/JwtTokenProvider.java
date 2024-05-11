@@ -36,6 +36,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
     public TokenInfo generateToken(Authentication authentication) {
         // 권한 가져오기
@@ -82,7 +83,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .compact();
-        
+
         // Token Info 생성
         return TokenInfo.builder()
                 .grantType(BEARER_TYPE)
@@ -91,7 +92,7 @@ public class JwtTokenProvider {
                 .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
                 .build();
     }
-    
+
     // Token에 담겨있는 정보를 이용해 Authentication 객체를 리턴
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
@@ -108,8 +109,7 @@ public class JwtTokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
     private Claims parseClaims(String accessToken) {
