@@ -49,12 +49,12 @@ public class UserService {
         return userId;
     }
 
-    public UserResponse getUserByNickname(String nickname) {
-        return getUser(userRepository.findByNickname(nickname).getId());
+    public UserResponse getUserByEmail(String email) {
+        return getUser(userRepository.findByEmail(email).getId());
     }
 
-    public UserResponse getUserByUsernameAndEmail(String username, String email) {
-        return getUser(userRepository.findByUsernameAndEmail(username, email).getId());
+    public UserResponse getUserByNickname(String nickname) {
+        return getUser(userRepository.findByNickname(nickname).getId());
     }
 
     public List<UserResponse> getUserList() {
@@ -66,13 +66,6 @@ public class UserService {
 
     public List<UserResponse> getUserByUsername(String username) {
         return userRepository.findByUsername(username).stream()
-                .map(User::getId)
-                .map(this::getUser)
-                .collect(Collectors.toList());
-    }
-
-    public List<UserResponse> getUserListByEmail(String email) {
-        return userRepository.findByEmail(email).stream()
                 .map(User::getId)
                 .map(this::getUser)
                 .collect(Collectors.toList());

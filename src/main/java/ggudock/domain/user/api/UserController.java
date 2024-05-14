@@ -55,11 +55,10 @@ public class UserController {
         return new ResponseEntity<>(userService.getUser(userId), HttpStatusCode.valueOf(200));
     }
 
-    @Operation(summary = "이름과 이메일로 유저 찾기")
-    @GetMapping("/usernameAndEmail")
-    public ResponseEntity<UserResponse> getUserByUsernameAndEmail(@RequestParam(name = "username") String username,
-                                                                  @RequestParam(name = "email") String email) {
-        return new ResponseEntity<>(userService.getUserByUsernameAndEmail(username, email), HttpStatusCode.valueOf(200));
+    @Operation(summary = "이메일로 유저 찾기")
+    @GetMapping("/email")
+    public ResponseEntity<UserResponse> getUserByEmail(@RequestParam(name = "email") String email) {
+        return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "닉네임으로 유저 찾기")
@@ -78,12 +77,6 @@ public class UserController {
     @GetMapping("/listByUsername")
     public ResponseEntity<List<UserResponse>> getUserListByUsername(@RequestParam(name = "username") String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatusCode.valueOf(200));
-    }
-
-    @Operation(summary = "이메일로 유저 리스트 찾기")
-    @GetMapping("/listByEmail")
-    public ResponseEntity<List<UserResponse>> getUserListByEmail(@RequestParam(name = "email") String email) {
-        return new ResponseEntity<>(userService.getUserListByEmail(email), HttpStatusCode.valueOf(200));
     }
 
     @PostMapping("/reissue")
