@@ -3,6 +3,7 @@ package ggudock.global.aspect;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
@@ -19,15 +20,36 @@ import java.util.Objects;
 @Aspect
 @Slf4j
 public class LogAspect {
-    // com.aop.controller 이하 패키지의 모든 클래스 이하 모든 메서드에 적용
-    @Pointcut("within(@org.springframework.stereotype.Service *)" +
-            " || within(@org.springframework.web.bind.annotation.RestController *)")
-    private void cut() {
+
+    @Pointcut("execution(* ggudock.domain..*(..))")
+    public void all() {
+    }
+
+    @Pointcut("execution(* ggudock.domain..*Controller.*(..))")
+    public void controller() {
+    }
+
+    @Pointcut("execution(* ggudock.domain..*Service.*(..))")
+    public void service() {
+    }
+
+    @Around("all()")
+    public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+        try {
+            Object result = joinPoint.proceed();
+            return result;
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            log.info("log = {}", joinPoint.getSignature());
+            log.info("timeMs = {}", timeMs);
+        }
     }
 
     // Pointcut에 의해 필터링된 경로로 들어오는 경우 메서드 호출 전에 적용
-    @Before("cut()")
-    public void beforeParameterLog(JoinPoint joinPoint) {
+    @Before("controller() || service()")
+    public void beforeLogic(JoinPoint joinPoint) throws Throwable {
 
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         Method method = getMethod(joinPoint);
@@ -49,10 +71,11 @@ public class LogAspect {
     }
 
     // Poincut에 의해 필터링된 경로로 들어오는 경우 메서드 리턴 후에 적용
-    @AfterReturning(value = "cut()", returning = "returnObj")
-    public void afterReturnLog(JoinPoint joinPoint, Object returnObj) {
+    @AfterReturning("controller() || service()")
+    public void afterLogic(JoinPoint joinPoint) {
         // 메서드 정보 받아오기
-        Method method = getMethod(joinPoint);
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
         log.info("====================Response info====================");
         log.info("Method Name : {}", method.getName());
 
