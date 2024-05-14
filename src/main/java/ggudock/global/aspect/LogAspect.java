@@ -79,19 +79,13 @@ public class LogAspect {
         log.info("====================Response info====================");
         log.info("Method Name : {}", method.getName());
 
-
-        Object[] args = joinPoint.getArgs();
-
-        if (args.length == 0) log.info("no parameter");
-        else {
-            log.info("parameter totalCount = {}", method.getParameterCount());
-            for (Object arg : args) {
-                log.info("return type = {}", arg.getClass().getSimpleName());
-                log.info("return value = {}", arg);
-
-            }
+        if(returnObj != null) {
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+        }else{
+            log.info("return type = null");
+            log.info("return value = null");
         }
-
     }
 
     // JoinPoint로 메서드 정보 가져오기
