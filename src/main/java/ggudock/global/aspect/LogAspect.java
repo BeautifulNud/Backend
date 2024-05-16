@@ -62,10 +62,11 @@ public class LogAspect {
         Object[] args = joinPoint.getArgs();
         if (args.length == 0) log.info("no parameter");
         else {
-            log.info("parameter totalCount = {}", method.getParameterCount());
             for (Object arg : args) {
-                log.info("parameter type = {}", arg.getClass().getSimpleName());
-                log.info("parameter value = {}", arg);
+                if(arg != null) {
+                    log.info("parameter type = {}", arg.getClass().getSimpleName());
+                    log.info("parameter value = {}", arg);
+                }
             }
         }
     }
@@ -79,12 +80,15 @@ public class LogAspect {
         log.info("====================Response info====================");
         log.info("Method Name : {}", method.getName());
 
-        if(returnObj != null) {
-            log.info("return type = {}", returnObj.getClass().getSimpleName());
-            log.info("return value = {}", returnObj);
-        }else{
-            log.info("return type = null");
-            log.info("return value = null");
+        Object[] args = joinPoint.getArgs();
+        if (args.length == 0) log.info("no parameter");
+        else {
+            for (Object arg : args) {
+                if(arg != null) {
+                    log.info("parameter type = {}", arg.getClass().getSimpleName());
+                    log.info("parameter value = {}", arg);
+                }
+            }
         }
     }
 

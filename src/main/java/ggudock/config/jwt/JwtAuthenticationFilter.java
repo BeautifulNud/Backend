@@ -35,13 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-
         // 1. Request Header 에서 JWT 토큰 추출
         String token = resolveToken(request);
 
-        // log를 이용한 확인
-        log.info("[This is Verifying token!!]");
-        log.info(request.getRequestURL().toString());
         // 2. validateToken으로 토큰 유효성 검사
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             //Redis에 해당 accessToken logout 여부 확인
