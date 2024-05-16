@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -42,28 +41,28 @@ public class LogAspect {
         } finally {
             long finish = System.currentTimeMillis();
             long timeMs = finish - start;
-            log.info("log = {}", joinPoint.getSignature());
+            log.info("Method Name : {}", joinPoint.getSignature().getName());
+            log.info("class path : {}", joinPoint.getSignature().getDeclaringType());
             log.info("timeMs = {}", timeMs);
         }
     }
 
     // Pointcut에 의해 필터링된 경로로 들어오는 경우 메서드 호출 전에 적용
     @Before("controller() || service()")
-    public void beforeLogic(JoinPoint joinPoint) throws Throwable {
+    public void beforeLogic(JoinPoint joinPoint) {
 
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         Method method = getMethod(joinPoint);
-        log.info("");
+        log.info("[Request]");
         log.info("[{}] {}", request.getMethod(), URLDecoder.decode(request.getRequestURI(), StandardCharsets.UTF_8));
-        log.info("====================Request info====================");
-        log.info("Method Name : {}", method.getName());
 
+        log.info("Method Name : {}", method.getName());
         // 파라미터 받아오기
         Object[] args = joinPoint.getArgs();
         if (args.length == 0) log.info("no parameter");
         else {
             for (Object arg : args) {
-                if(arg != null) {
+                if (arg != null) {
                     log.info("parameter type = {}", arg.getClass().getSimpleName());
                     log.info("parameter value = {}", arg);
                 }
@@ -72,23 +71,14 @@ public class LogAspect {
     }
 
     // Poincut에 의해 필터링된 경로로 들어오는 경우 메서드 리턴 후에 적용
-    @AfterReturning("controller() || service()")
-    public void afterLogic(JoinPoint joinPoint) {
-        // 메서드 정보 받아오기
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        log.info("====================Response info====================");
-        log.info("Method Name : {}", method.getName());
-
-        Object[] args = joinPoint.getArgs();
-        if (args.length == 0) log.info("no parameter");
-        else {
-            for (Object arg : args) {
-                if(arg != null) {
-                    log.info("parameter type = {}", arg.getClass().getSimpleName());
-                    log.info("parameter value = {}", arg);
-                }
-            }
+    @AfterReturning(value = "controller() || service()", returning = "returnObj")
+    public void afterLogic(Object returnObj) {
+        log.info("[Response]");
+        if (returnObj != null) {
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+        } else {
+            log.info("this method not exist return value");
         }
     }
 
