@@ -23,32 +23,26 @@ public class ItemController {
 
     // 상품 상세보기
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemDetailResponse> getDetail(@PathVariable("itemId") Long itemId) {
-        return new ResponseEntity<>(itemService.getDetail(itemId), HttpStatusCode.valueOf(200));
-    }
-
-    // 상품 상세보기(토큰 有)
-    @GetMapping("/{itemId}")
-    public ResponseEntity<ItemDetailResponse> getDetailWithToken(@RequestHeader(value = "Authorization") String token, @PathVariable("itemId") Long itemId) {
-        return new ResponseEntity<>(itemService.getDetailWithToken(token, itemId), HttpStatusCode.valueOf(200));
+    public ResponseEntity<ItemDetailResponse> getDetail(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable("itemId") Long itemId) {
+        return new ResponseEntity<>(itemService.getDetail(token, itemId), HttpStatusCode.valueOf(200));
     }
 
     // 상품 전체 리스트 가져오기
     @GetMapping("/list")
-    public ResponseEntity<List<ItemDetailResponse>> getList() {
-        return new ResponseEntity<>(itemService.getList(), HttpStatusCode.valueOf(200));
+    public ResponseEntity<List<ItemDetailResponse>> getList(@RequestHeader(value = "Authorization", required = false) String token) {
+        return new ResponseEntity<>(itemService.getList(token), HttpStatusCode.valueOf(200));
     }
 
     // 상품 카테고리별 리스트 가져오기
     @GetMapping("/category")
-    public ResponseEntity<List<ItemDetailResponse>> getCategoryList(@RequestParam("category") String category) {
-        return new ResponseEntity<>(itemService.getCategoryList(category), HttpStatusCode.valueOf(200));
+    public ResponseEntity<List<ItemDetailResponse>> getCategoryList(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("category") String category) {
+        return new ResponseEntity<>(itemService.getCategoryList(token, category), HttpStatusCode.valueOf(200));
     }
 
     // 상품 카테고리별 리스트 가져오기
     @GetMapping("/order-by")
-    public ResponseEntity<List<ItemDetailResponse>> getListOrderBy(@RequestParam("order-by") String orderBy) {
-        return new ResponseEntity<>(itemService.getListOrderBy(getStrategy(orderBy)), HttpStatusCode.valueOf(200));
+    public ResponseEntity<List<ItemDetailResponse>> getListOrderBy(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam("order-by") String orderBy) {
+        return new ResponseEntity<>(itemService.getListOrderBy(token, getStrategy(orderBy)), HttpStatusCode.valueOf(200));
     }
 
     private OrderByStrategy getStrategy(String orderBy) {

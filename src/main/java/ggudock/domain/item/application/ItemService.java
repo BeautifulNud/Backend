@@ -11,6 +11,8 @@ import ggudock.domain.item.entity.Item;
 import ggudock.domain.item.repository.ItemRepository;
 import ggudock.domain.item.strategy.OrderByStrategy;
 import ggudock.domain.user.entity.KakaoProfile;
+import ggudock.domain.user.entity.User;
+import ggudock.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -28,51 +31,40 @@ import static ggudock.domain.cart.model.Category.DIB;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
-    public List<ItemDetailResponse> getList() {
+    public List<ItemDetailResponse> getList(String token) {
         return itemRepository.findAll().stream()
                 .map(Item::getId)
-                .map(this::getDetail)
+                .map(id -> getDetail(token,id))
                 .toList();
     }
 
-    public List<ItemDetailResponse> getCategoryList(String category) {
+    public List<ItemDetailResponse> getCategoryList(String token, String category) {
         return itemRepository.findAll().stream()
                 .filter(item -> item.isSameCategory(category))
                 .map(Item::getId)
-                .map(this::getDetail)
+                .map(id -> getDetail(token,id))
                 .toList();
     }
 
-    public List<ItemDetailResponse> getListOrderBy(OrderByStrategy orderByStrategy) {
+    public List<ItemDetailResponse> getListOrderBy(String token, OrderByStrategy orderByStrategy) {
         return orderByStrategy.findList(itemRepository).stream()
                 .map(Item::getId)
-                .map(this::getDetail)
+                .map(id -> getDetail(token,id))
                 .toList();
     }
 
-    public ItemDetailResponse getDetail(Long itemId) {
-        return createResponse(itemId);
-    }
-
-    public ItemDetailResponse getDetailWithToken(String token, Long itemId) {
-        String email = getEmailByToken(token);
+    public ItemDetailResponse getDetail(String token, Long itemId) {
         Cart cart = getCart(itemId);
-        // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
-        return createResponse(itemId);
-    }
-
-    public List<ItemDetailResponse> getListWithToken(String token) {
-        return itemRepository.findAll().stream()
-                .map(Item::getId)
-                .map(this::getDetail)
-                .toList();
-    }
-
-    private ItemDetailResponse createResponse(Long id) {
-        Item item = getItem(id);
-        Company company = getCompany(id);
-        Category category = getCategory(id);
+        User user = null;
+        if(!isTokenEmpty(token)){
+            String email = getEmailByToken(token);
+            user = getUser(email);
+        }
+        Item item = getItem(itemId);
+        Company company = getCompany(itemId);
+        Category category = getCategory(itemId);
         return ItemDetailResponse.builder()
                 .name(item.getName())
                 .category(category.getName())
@@ -83,6 +75,7 @@ public class ItemService {
                 .description(item.getDescription())
                 .view(item.getViews())
                 .rating(item.getRating())
+                .wish(user != null && user.hasWish(cart))
                 .companyDto(CompanyDto.EntityToDto(company))
                 .build();
     }
@@ -105,6 +98,9 @@ public class ItemService {
     // TODO repo 개발 시 연결
     private Category getCategory(Long id) {
         return Category.builder().build();
+    }
+    private User getUser(String email) {
+        return userRepository.findByEmail(email);
     }
     private String getEmailByToken(String accessToken) {
 
@@ -134,5 +130,8 @@ public class ItemService {
         }
 
         return kakaoProfile.getKakaoAccount().getEmail();
+    }
+    private boolean isTokenEmpty(String token) {
+        return StringUtils.hasText(token);
     }
 }

@@ -2,6 +2,7 @@ package ggudock.domain.user.entity;
 
 import ggudock.config.oauth.entity.ProviderType;
 import ggudock.config.oauth.entity.Role;
+import ggudock.domain.cart.entity.Cart;
 import ggudock.domain.user.dto.Request.UserRequest;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -11,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,7 +22,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
+
     @Column(name = "user_name")
     @NotNull
     private String username;
@@ -46,6 +49,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "oauth_provider", nullable = false)
     private ProviderType providerType;
 
+    @OneToMany(mappedBy = "user")
+    private List<Cart> cartList;
+
     @Builder
     public User(Long id, String username, String nickname, String password, String email, String imageUrl, String phoneNumber, Role role, ProviderType providerType) {
         this.id = id;
@@ -66,6 +72,11 @@ public class User extends BaseTimeEntity {
     public void signupUser(UserRequest.SignUp request) {
         this.nickname = request.getNickname();
         this.phoneNumber = request.getPhoneNumber();
+    }
+
+    public boolean hasWish(Cart wish) {
+        return this.cartList.stream()
+                .anyMatch(cart -> cart.getId().equals(wish.getId()));
     }
 
 }
