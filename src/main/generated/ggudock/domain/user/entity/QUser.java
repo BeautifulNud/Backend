@@ -28,14 +28,22 @@ public class QUser extends EntityPathBase<User> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imageUrl = createString("imageUrl");
+
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
-    public final StringPath name = createString("name");
-
     public final StringPath nickname = createString("nickname");
 
-    public final StringPath picture = createString("picture");
+    public final StringPath password = createString("password");
+
+    public final StringPath phoneNumber = createString("phoneNumber");
+
+    public final EnumPath<ggudock.config.oauth.entity.ProviderType> providerType = createEnum("providerType", ggudock.config.oauth.entity.ProviderType.class);
+
+    public final EnumPath<ggudock.config.oauth.entity.Role> role = createEnum("role", ggudock.config.oauth.entity.Role.class);
+
+    public final StringPath username = createString("username");
 
     public QUser(String variable) {
         super(User.class, forVariable(variable));

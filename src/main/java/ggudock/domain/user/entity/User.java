@@ -1,5 +1,8 @@
 package ggudock.domain.user.entity;
 
+import ggudock.config.oauth.entity.ProviderType;
+import ggudock.config.oauth.entity.Role;
+import ggudock.domain.user.dto.Request.UserRequest;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,21 +19,53 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
     @Column(name = "user_name")
     @NotNull
-    private String name;
+    private String username;
+
+    @Column(unique = true)
     @NotNull
     private String nickname;
-    private String picture;
+
+    private String password;
+
     @NotNull
     private String email;
 
+    private String imageUrl;
+
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_provider", nullable = false)
+    private ProviderType providerType;
+
     @Builder
-    public User(String name, String nickname, String picture, String email) {
-        this.name = name;
+    public User(Long id, String username, String nickname, String password, String email, String imageUrl, String phoneNumber, Role role, ProviderType providerType) {
+        this.id = id;
+        this.username = username;
         this.nickname = nickname;
-        this.picture = picture;
+        this.password = password;
         this.email = email;
+        this.imageUrl = imageUrl;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.providerType = providerType;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void signupUser(UserRequest.SignUp request) {
+        this.nickname = request.getNickname();
+        this.phoneNumber = request.getPhoneNumber();
     }
 
 }
