@@ -16,7 +16,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="user_name")
+    @Column(name = "user_name")
     @NotNull
     private String name;
     @NotNull
@@ -32,4 +32,5 @@ public class User extends BaseTimeEntity {
         this.picture = picture;
         this.email = email;
     }
+
 }
