@@ -19,7 +19,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+  
     @Column(name = "user_name")
     @NotNull
     private String username;
@@ -67,4 +67,5 @@ public class User extends BaseTimeEntity {
         this.nickname = request.getNickname();
         this.phoneNumber = request.getPhoneNumber();
     }
+
 }
