@@ -26,7 +26,7 @@ public class QItem extends EntityPathBase<Item> {
 
     public final ListPath<ggudock.domain.cart.entity.Cart, ggudock.domain.cart.entity.QCart> cartList = this.<ggudock.domain.cart.entity.Cart, ggudock.domain.cart.entity.QCart>createList("cartList", ggudock.domain.cart.entity.Cart.class, ggudock.domain.cart.entity.QCart.class, PathInits.DIRECT2);
 
-    public final EnumPath<ggudock.domain.item.model.ItemCategory> category = createEnum("category", ggudock.domain.item.model.ItemCategory.class);
+    public final ggudock.domain.category.entity.QCategory category;
 
     public final ggudock.domain.company.entity.QCompany company;
 
@@ -80,6 +80,7 @@ public class QItem extends EntityPathBase<Item> {
 
     public QItem(Class<? extends Item> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.category = inits.isInitialized("category") ? new ggudock.domain.category.entity.QCategory(forProperty("category")) : null;
         this.company = inits.isInitialized("company") ? new ggudock.domain.company.entity.QCompany(forProperty("company")) : null;
     }
 
