@@ -94,23 +94,19 @@ public class UserController {
     @ResponseBody
     @Operation(summary = "Oauth2User 테스트")
     @GetMapping("/test/oauth1")
-    public String testOAuthLogin(@AuthenticationPrincipal OAuth2User auth2User) { //세션 정보 받아오기 (DI 의존성 주입)
-        return (String) auth2User.getAttributes().get("email");
+    public String testOAuthLogin(@AuthenticationPrincipal OAuth2User oAuth2User) { //세션 정보 받아오기 (DI 의존성 주입)
+        System.out.println("authentication: " + oAuth2User.getAttributes());
+        System.out.println("email : " + oAuth2User.getAttributes().get("email"));
+        return "Oauth2User 테스트";
     }
 
     @Operation(summary = "Oauth2User 테스트")
     @GetMapping("/test/oauth2")
-    public String testOAuthLogin(@AuthenticationPrincipal Authentication authentication) {
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        return principal.getEmail();
-    }
-
-    @Operation(summary = "Oauth2User 테스트")
-    @GetMapping("/test/oauth3")
     public String testSecurityUtil() {
         Authentication authentication = SecurityUtil.getAuthentication();
         UserPrincipal oAuth2User = (UserPrincipal) authentication.getPrincipal();
         System.out.println("authentication: " + oAuth2User.getAttributes());
-        return "OAuth 세션 정보 확인";
+        System.out.println("email : " + oAuth2User.getAttributes().get("email"));
+        return "Oauth2User 테스트";
     }
 }

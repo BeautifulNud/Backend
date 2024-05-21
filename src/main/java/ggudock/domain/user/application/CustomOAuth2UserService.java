@@ -58,16 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             savedUser = createUser(userInfo, providerType);
             log.info("{}을 통해 계정을 생성했습니다.", savedUser.getProviderType());
         }
-
-        UserPrincipal principal = UserPrincipal.create(savedUser, user.getAttributes());
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        log.info("{}", SecurityContextHolder.getContext().getAuthentication());
-
-        log.info("SecurityContextHolder에 {} 저장", principal.getAttributes().get("email"));
-        return principal;
+        return UserPrincipal.create(savedUser, user.getAttributes());
     }
 
     //가져온 사용자 정보를 통해서 회원가입 실행
