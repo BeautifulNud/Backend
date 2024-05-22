@@ -28,6 +28,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // 요청을 바탕으로 유저 정보를 담은 객체 반환
         OAuth2User user = super.loadUser(userRequest);
+        log.info("userRequest.getAttributes : {}", super.loadUser(userRequest).getAttributes());
+
         try {
             return process(userRequest, user);
         } catch (AuthenticationException ex) {
@@ -39,8 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     //인증을 요청하는 사용자에 따라서 없는 회원이면 회원가입
-    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) throws Exception {
-
+    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
         //현재 진행중인 서비스를 구분하기 위해 문자열을 받음
         ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
@@ -48,7 +49,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (savedUser != null) {
             log.info("{} 계정에 계정이 존재합니다.", savedUser.getProviderType());
-            throw new OAuthProviderMissMatchException("already_signed_up :" + savedUser.getProviderType());
+            return UserPrincipal.create(savedUser, user.getAttributes());
+            //            throw new OAuthProviderMissMatchException("already_signed_up :" + savedUser.getProviderType());
         } else {
             savedUser = createUser(userInfo, providerType);
             log.info("{}을 통해 계정을 생성했습니다.", savedUser.getProviderType());
