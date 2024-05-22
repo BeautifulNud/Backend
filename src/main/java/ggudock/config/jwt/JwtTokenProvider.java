@@ -1,5 +1,6 @@
 package ggudock.config.jwt;
 
+import ggudock.config.oauth.entity.UserPrincipal;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,9 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 
 import java.security.Key;
 import java.util.Arrays;
@@ -35,7 +34,6 @@ public class JwtTokenProvider {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
     public TokenInfo generateToken(Authentication authentication) {
@@ -107,9 +105,10 @@ public class JwtTokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        User user = new User(claims.getSubject(), "", authorities);
+//        UserPrincipal principal = UserPrincipal.create(user);
+
+        return new UsernamePasswordAuthenticationToken(user, "", authorities);
     }
 
     private Claims parseClaims(String accessToken) {
@@ -123,20 +122,6 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
-
-    /*// accessToken 재발급
-    public void reissue(TokenInfo reissue) {
-        try {
-            Authentication authentication = getAuthentication(reissue.getAccessToken());
-            // 새로운 토큰 생성
-            TokenInfo tokenInfo = generateToken(authentication);
-
-            log.info("토큰 재발급을 성공하였습니다.");
-        } catch (Exception e) {
-            if (!validateToken(reissue.getRefreshToken()))
-                throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
-        }
-    }*/
 
     // 토큰의 유효성 검증, 토큰을 파싱하여 exception들을 캐치
     public boolean validateToken(String token) {
