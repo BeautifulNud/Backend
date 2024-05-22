@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Tag(name = "User API", description = "유저 관련 Api (#7)")
@@ -94,19 +95,13 @@ public class UserController {
     @ResponseBody
     @Operation(summary = "Oauth2User 테스트")
     @GetMapping("/test/oauth1")
-    public String testOAuthLogin(@AuthenticationPrincipal OAuth2User oAuth2User) { //세션 정보 받아오기 (DI 의존성 주입)
-        System.out.println("authentication: " + oAuth2User.getAttributes());
-        System.out.println("email : " + oAuth2User.getAttributes().get("email"));
-        return "Oauth2User 테스트";
+    public Map<String, Object> testOAuthLogin(@AuthenticationPrincipal OAuth2User oAuth2User) { //세션 정보 받아오기 (DI 의존성 주입)
+        return oAuth2User.getAttributes();
     }
 
     @Operation(summary = "Oauth2User 테스트")
     @GetMapping("/test/oauth2")
-    public String testSecurityUtil() {
-        Authentication authentication = SecurityUtil.getAuthentication();
-        UserPrincipal oAuth2User = (UserPrincipal) authentication.getPrincipal();
-        System.out.println("authentication: " + oAuth2User.getAttributes());
-        System.out.println("email : " + oAuth2User.getAttributes().get("email"));
-        return "Oauth2User 테스트";
+    public ResponseEntity<Optional<String>> testSecurityUtil() {
+        return new ResponseEntity<>(SecurityUtil.getCurrentName(), HttpStatusCode.valueOf(200));
     }
 }

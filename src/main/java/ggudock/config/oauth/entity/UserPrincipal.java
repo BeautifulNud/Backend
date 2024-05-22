@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
@@ -18,7 +17,7 @@ import java.util.Map;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class UserPrincipal implements UserDetails, OAuth2User {
+public class UserPrincipal implements OAuth2User {
     private final String email;
     private final String username;
     private final String password;
@@ -40,26 +39,6 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     @Override
     public String getName() {
         return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
     }
 
     @Override

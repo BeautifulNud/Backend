@@ -55,12 +55,12 @@ public class ItemService {
         return createResponse(itemId);
     }
 
-//    public ItemDetailResponse getDetailWithToken(String token, Long itemId) {
-//        String email = getEmailByToken(token);
-//        Cart cart = getCart(itemId);
-//        // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
-//        return createResponse(itemId);
-//    }
+    public ItemDetailResponse getDetailWithToken(String token, Long itemId) {
+        String email = getEmailByToken(token);
+        Cart cart = getCart(itemId);
+        // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
+        return createResponse(itemId);
+    }
 
     public List<ItemDetailResponse> getListWithToken(String token) {
         return itemRepository.findAll().stream()
