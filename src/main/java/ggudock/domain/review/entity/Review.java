@@ -15,17 +15,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseTimeEntity {
     @Id
-    @Column(name="review_id")
+    @Column(name = "review_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String title;
-    @NotNull
     private String content;
 
     @NotNull
-    private Long rating;
+    private float rating;
+
+    @NotNull
+    private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -36,10 +37,10 @@ public class Review extends BaseTimeEntity {
     private Item item;
 
     @Builder
-    public Review(String title, String content, Long rating, User user, Item item) {
-        this.title = title;
+    public Review(String content, float rating, String date, User user, Item item) {
         this.content = content;
         this.rating = rating;
+        this.date = date;
         this.user = user;
         this.item = item;
     }

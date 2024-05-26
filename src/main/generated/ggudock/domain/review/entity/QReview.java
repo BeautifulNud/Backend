@@ -29,6 +29,8 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final StringPath createdAt = _super.createdAt;
 
+    public final StringPath date = createString("date");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final ggudock.domain.item.entity.QItem item;
@@ -36,9 +38,7 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Long> rating = createNumber("rating", Long.class);
-
-    public final StringPath title = createString("title");
+    public final NumberPath<Float> rating = createNumber("rating", Float.class);
 
     public final ggudock.domain.user.entity.QUser user;
 
