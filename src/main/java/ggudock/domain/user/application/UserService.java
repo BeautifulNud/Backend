@@ -29,10 +29,10 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public UserResponse signup(Long userId, UserRequest.SignUp request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId + "가 없습니다"));
+    public UserResponse signup(String email, UserRequest.SignUp request) {
+        User user = userRepository.findByEmail(email);
         user.signupUser(request);
-        return getUser(userId);
+        return getUser(user.getId());
     }
 
     @Transactional
@@ -47,6 +47,11 @@ public class UserService {
         User user = userRepository.findUserById(userId);
         userRepository.delete(user);
         return userId;
+    }
+
+    public Long getLoginUser(String email) {
+        User loginUser = userRepository.findByEmail(email);
+        return loginUser.getId();
     }
 
     public UserResponse getUserByEmail(String email) {

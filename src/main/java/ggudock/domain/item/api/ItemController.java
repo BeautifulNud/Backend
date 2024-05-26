@@ -28,7 +28,7 @@ public class ItemController {
     }
 
     // 상품 상세보기(토큰 有)
-    @GetMapping("/{itemId}")
+    @GetMapping("/token/{itemId}")
     public ResponseEntity<ItemDetailResponse> getDetailWithToken(@RequestHeader(value = "Authorization") String token, @PathVariable("itemId") Long itemId) {
         return new ResponseEntity<>(itemService.getDetailWithToken(token, itemId), HttpStatusCode.valueOf(200));
     }
