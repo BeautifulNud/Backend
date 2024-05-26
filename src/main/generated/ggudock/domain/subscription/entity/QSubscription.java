@@ -27,6 +27,8 @@ public class QSubscription extends EntityPathBase<Subscription> {
     //inherited
     public final StringPath createdAt = _super.createdAt;
 
+    public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final ggudock.domain.item.entity.QItem item;
@@ -34,9 +36,17 @@ public class QSubscription extends EntityPathBase<Subscription> {
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Integer> period = createNumber("period", Integer.class);
+    public final NumberPath<Long> periodDays = createNumber("periodDays", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> subscribeDate = createDateTime("subscribeDate", java.time.LocalDateTime.class);
+    public final NumberPath<Integer> price = createNumber("price", Integer.class);
+
+    public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
+
+    public final EnumPath<ggudock.domain.subscription.model.State> state = createEnum("state", ggudock.domain.subscription.model.State.class);
+
+    public final EnumPath<ggudock.domain.subscription.model.SubType> subType = createEnum("subType", ggudock.domain.subscription.model.SubType.class);
+
+    public final StringPath title = createString("title");
 
     public final ggudock.domain.user.entity.QUser user;
 
