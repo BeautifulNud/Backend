@@ -12,6 +12,8 @@ import ggudock.global.exception.BusinessException;
 import ggudock.global.exception.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,40 +57,36 @@ public class ReviewService {
         reviewRepository.deleteAll(reviewList);
     }
 
-    public List<ReviewResponse> getListOrderByDateDesc(Long itemId) {
-        return reviewRepository.findByItem_IdOrderByDateDesc(itemId).stream()
-                .map(Review::getId)
-                .map(this::getDetail)
-                .toList();
+    public Page<ReviewResponse> getListByUser(int page, String email) {
+        PageRequest pageRequest = createPageRequest(page);
+        Page<Review> reviewPage = createReviewPageByUser(pageRequest, email);
+        return createReviewResponsePage(reviewPage);
     }
 
-    public List<ReviewResponse> getListOrderByDateAsc(Long itemId) {
-        return reviewRepository.findByItem_IdOrderByDateAsc(itemId).stream()
-                .map(Review::getId)
-                .map(this::getDetail)
-                .toList();
+    public Page<ReviewResponse> getListOrderByDateAsc(int page, Long itemId) {
+        PageRequest pageRequest = createPageRequest(page);
+        Page<Review> reviewPage = createReviewPageByItemOrderByDateAsc(pageRequest, itemId);
+        return createReviewResponsePage(reviewPage);
     }
 
-    public List<ReviewResponse> getListOrderByRatingDesc(Long itemId) {
-        return reviewRepository.findByItem_IdOrderByRatingDescDateDesc(itemId).stream()
-                .map(Review::getId)
-                .map(this::getDetail)
-                .toList();
+    public Page<ReviewResponse> getListOrderByDateDesc(int page, Long itemId) {
+        PageRequest pageRequest = createPageRequest(page);
+        Page<Review> reviewPage = createReviewPageByItemOrderByDateDesc(pageRequest, itemId);
+        return createReviewResponsePage(reviewPage);
     }
 
-    public List<ReviewResponse> getListOrderByRatingAsc(Long itemId) {
-        return reviewRepository.findByItem_IdOrderByRatingAscDateDesc(itemId).stream()
-                .map(Review::getId)
-                .map(this::getDetail)
-                .toList();
+    public Page<ReviewResponse> getListOrderByRatingAsc(int page, Long itemId) {
+        PageRequest pageRequest = createPageRequest(page);
+        Page<Review> reviewPage = createReviewPageByItemOrderByRatingAsc(pageRequest, itemId);
+        return createReviewResponsePage(reviewPage);
     }
 
-    public List<ReviewResponse> getListByUser(String email) {
-        return reviewRepository.findByUser_EmailOrderByDateDesc(email).stream()
-                .map(Review::getId)
-                .map(this::getDetail)
-                .toList();
+    public Page<ReviewResponse> getListOrderByRatingDesc(int page, Long itemId) {
+        PageRequest pageRequest = createPageRequest(page);
+        Page<Review> reviewPage = createReviewPageByItemOrderByRatingDesc(pageRequest, itemId);
+        return createReviewResponsePage(reviewPage);
     }
+
 
     private User getUser(String email) {
         return userRepository.findByEmail(email);
@@ -102,6 +100,38 @@ public class ReviewService {
     public Review getReview(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+    }
+
+    private static ReviewResponse createReviewResposnse(Review review) {
+        return new ReviewResponse(review);
+    }
+
+    private static PageRequest createPageRequest(int page) {
+        return PageRequest.of(page, 10);
+    }
+
+    private static Page<ReviewResponse> createReviewResponsePage(Page<Review> reviewPage) {
+        return reviewPage.map(ReviewResponse::new);
+    }
+
+    private Page<Review> createReviewPageByUser(PageRequest pageRequest, String email) {
+        return reviewRepository.findByUser_EmailOrderByDateDesc(email, pageRequest);
+    }
+
+    private Page<Review> createReviewPageByItemOrderByDateAsc(PageRequest pageRequest, Long itemId) {
+        return reviewRepository.findByItem_IdOrderByDateAsc(itemId, pageRequest);
+    }
+
+    private Page<Review> createReviewPageByItemOrderByDateDesc(PageRequest pageRequest, Long itemId) {
+        return reviewRepository.findByItem_IdOrderByDateDesc(itemId, pageRequest);
+    }
+
+    private Page<Review> createReviewPageByItemOrderByRatingAsc(PageRequest pageRequest, Long itemId) {
+        return reviewRepository.findByItem_IdOrderByRatingAscDateDesc(itemId, pageRequest);
+    }
+
+    private Page<Review> createReviewPageByItemOrderByRatingDesc(PageRequest pageRequest, Long itemId) {
+        return reviewRepository.findByItem_IdOrderByRatingDescDateDesc(itemId, pageRequest);
     }
 
     @Transactional(readOnly = true)
@@ -121,7 +151,5 @@ public class ReviewService {
                 .build();
     }
 
-    private static ReviewResponse createReviewResposnse(Review review) {
-        return new ReviewResponse(review);
-    }
+
 }
