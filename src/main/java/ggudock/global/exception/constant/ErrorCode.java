@@ -10,8 +10,11 @@ public enum ErrorCode {
     OK(HttpStatus.OK, "정상 처리 되었습니다."),
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "주소를 찾을 수 없습니다."),
+    NOT_FOUND_Subscription(HttpStatus.NOT_FOUND, "해당 구독을 찾을 수 없습니다."),
+    NOT_FOUND_Subscription_DATE(HttpStatus.NOT_FOUND,"해당 날짜로 된 구독을 찾을수 없습니다."),
     NOT_FOUND_DEFAULT_ADDRESS(HttpStatus.NOT_FOUND, "기본 배송지가 설정되어 있지 않습니다."),
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND,"카테고리를 찾을 수 없습니다."),
+    DUPLICATED_(HttpStatus.CREATED,"이미 저장되어 있는 배송지입니다."),
     DUPLICATED_ADDRESS(HttpStatus.CREATED,"이미 저장되어 있는 배송지입니다."),
     DUPLICATED_DATE(HttpStatus.CREATED, "이미 상품 요청된 날짜입니다."), // 가정이 요청
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "정상적인 요청이 아닙니다."),

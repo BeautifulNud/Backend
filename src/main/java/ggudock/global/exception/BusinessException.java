@@ -14,9 +14,8 @@ public class BusinessException extends RuntimeException {
     }
 
     public BusinessException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
         this.errorCode = errorCode;
-        this.message = "에러 정보가 비어있습니다.";
+        this.message = errorCode.getMessage();
     }
 
     public BusinessException(ErrorCode errorCode, String message) {
