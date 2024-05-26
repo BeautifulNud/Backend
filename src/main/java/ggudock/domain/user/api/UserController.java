@@ -1,7 +1,6 @@
 package ggudock.domain.user.api;
 
 import ggudock.config.jwt.TokenInfo;
-import ggudock.config.oauth.entity.UserPrincipal;
 import ggudock.config.oauth.utils.SecurityUtil;
 import ggudock.domain.user.application.UserService;
 import ggudock.domain.user.dto.Request.UserRequest;
@@ -10,37 +9,38 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-@Tag(name = "User API", description = "유저 관련 Api (#7)")
-@Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "유저", description = "유저 관련 Api (#7)")
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Operation(summary = "회원가입 후 닉네임, 전화번호 설정")
-    @PatchMapping("/join/{userId}")
-    public ResponseEntity<UserResponse> signinUser(@PathVariable Long userId, @Valid @RequestBody UserRequest.SignUp request) {
-        return new ResponseEntity<>(userService.signup(userId, request), HttpStatusCode.valueOf(200));
+    @PatchMapping("/join")
+    public ResponseEntity<UserResponse> signinUser(@Valid @RequestBody UserRequest.SignUp request) {
+        return new ResponseEntity<>(userService.signup(SecurityUtil.getCurrentName(), request), HttpStatusCode.valueOf(200));
+    }
+
+    @Operation(summary = "로그인한 유저 Id 받아오기")
+    @PatchMapping("/getId")
+    public ResponseEntity<Long> getLoginUserId() {
+        return new ResponseEntity<>(userService.getLoginUser(SecurityUtil.getCurrentName()), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "회원 이름 변경")
-    @PatchMapping("/updateUsername/{userId}/{username}")
-    public ResponseEntity<UserResponse> updateUsername(@PathVariable Long userId, @PathVariable String username) {
+    @PatchMapping("/updateUsername")
+    public ResponseEntity<UserResponse> updateUsername(@RequestParam(name = "userId") Long userId, @RequestParam(name = "username") String username) {
         return new ResponseEntity<>(userService.updateUsername(userId, username), HttpStatusCode.valueOf(200));
     }
 
@@ -101,7 +101,7 @@ public class UserController {
 
     @Operation(summary = "Oauth2User 테스트")
     @GetMapping("/test/oauth2")
-    public ResponseEntity<Optional<String>> testSecurityUtil() {
+    public ResponseEntity<String> testSecurityUtil() {
         return new ResponseEntity<>(SecurityUtil.getCurrentName(), HttpStatusCode.valueOf(200));
     }
 }
