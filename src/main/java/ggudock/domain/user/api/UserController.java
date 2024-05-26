@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,9 +26,9 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "회원가입 후 닉네임, 전화번호 설정")
-    @PatchMapping("/join")
-    public ResponseEntity<UserResponse> signinUser(@Valid @RequestBody UserRequest.SignUp request) {
-        return new ResponseEntity<>(userService.signup(SecurityUtil.getCurrentName(), request), HttpStatusCode.valueOf(200));
+    @PatchMapping("/join/{userId}")
+    public ResponseEntity<UserResponse> signinUser(@PathVariable(name = "userId") Long userId, @Valid @RequestBody UserRequest.SignUp request) {
+        return new ResponseEntity<>(userService.signup(userId, request), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "로그인한 유저 Id 받아오기")
@@ -39,8 +38,8 @@ public class UserController {
     }
 
     @Operation(summary = "회원 이름 변경")
-    @PatchMapping("/updateUsername")
-    public ResponseEntity<UserResponse> updateUsername(@RequestParam(name = "userId") Long userId, @RequestParam(name = "username") String username) {
+    @PatchMapping("/updateUsername/{userId}")
+    public ResponseEntity<UserResponse> updateUsername(@PathVariable(name = "userId") Long userId, @RequestParam(name = "username") String username) {
         return new ResponseEntity<>(userService.updateUsername(userId, username), HttpStatusCode.valueOf(200));
     }
 
@@ -52,13 +51,13 @@ public class UserController {
 
     @Operation(summary = "유저 삭제")
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Long> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Long> deleteUser(@PathVariable(name = "userId") Long userId) {
         return new ResponseEntity<>(userService.delete(userId), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "Id로 유저 찾기")
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable(name = "userId") Long userId) {
         return new ResponseEntity<>(userService.getUser(userId), HttpStatusCode.valueOf(200));
     }
 
@@ -81,8 +80,8 @@ public class UserController {
     }
 
     @Operation(summary = "이름으로 유저 찾기")
-    @GetMapping("/listByUsername")
-    public ResponseEntity<List<UserResponse>> getUserListByUsername(@RequestParam(name = "username") String username) {
+    @GetMapping("/list/{username}")
+    public ResponseEntity<List<UserResponse>> getUserListByUsername(@PathVariable(name = "username") String username) {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatusCode.valueOf(200));
     }
 
