@@ -6,6 +6,8 @@ import ggudock.domain.user.dto.Request.UserRequest;
 import ggudock.domain.user.dto.Response.UserResponse;
 import ggudock.domain.user.entity.User;
 import ggudock.domain.user.repository.UserRepository;
+import ggudock.global.exception.BusinessException;
+import ggudock.global.exception.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,22 +31,22 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public UserResponse signup(String email, UserRequest.SignUp request) {
-        User user = userRepository.findByEmail(email);
+    public UserResponse signup(Long userId, UserRequest.SignUp request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
         user.signupUser(request);
         return getUser(user.getId());
     }
 
     @Transactional
     public UserResponse updateUsername(Long userId, String username) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId + "가 없습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
         user.updateUsername(username);
         return getUser(userId);
     }
 
     @Transactional
     public Long delete(Long userId) {
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
         userRepository.delete(user);
         return userId;
     }
@@ -81,7 +83,7 @@ public class UserService {
     }
 
     private UserResponse createResponse(Long userId) {
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
         return UserResponse.builder()
                 .username(user.getUsername())
                 .nickname(user.getNickname())
