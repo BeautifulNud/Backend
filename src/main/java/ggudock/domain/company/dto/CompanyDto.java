@@ -4,6 +4,8 @@ import ggudock.domain.company.entity.Company;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.DayOfWeek;
+
 @Getter
 @Builder
 public class CompanyDto {
@@ -12,7 +14,7 @@ public class CompanyDto {
     private String telNumber;
     private String description;
     private String address;
-    private int holiday;
+    private DayOfWeek holiday;
 
     public static CompanyDto EntityToDto(Company company) {
         return CompanyDto.builder()

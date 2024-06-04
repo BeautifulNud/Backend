@@ -28,7 +28,7 @@ public class QCompany extends EntityPathBase<Company> {
 
     public final StringPath description = createString("description");
 
-    public final NumberPath<Integer> holiday = createNumber("holiday", Integer.class);
+    public final EnumPath<java.time.DayOfWeek> holiday = createEnum("holiday", java.time.DayOfWeek.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

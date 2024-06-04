@@ -1,5 +1,6 @@
 package ggudock.domain.company.entity;
 
+import ggudock.global.validator.customvalid.PhoneValid;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.DayOfWeek;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,15 +25,19 @@ public class Company extends BaseTimeEntity {
     @NotNull
     private String name;
 
+    @Column(name = "tel_number", unique = true)
+    @PhoneValid
     private String telNumber;
 
     private String description;
 
     private String address;
-    private int holiday;
+
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek holiday;
 
     @Builder
-    public Company(String name, String telNumber, String description, String address, int holiday) {
+    public Company(String name, String telNumber, String description, String address, DayOfWeek holiday) {
         this.name = name;
         this.telNumber = telNumber;
         this.description = description;
