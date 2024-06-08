@@ -50,10 +50,12 @@ public class OrderService {
         delete(orderId);
     }
 
+    @Transactional(readOnly = true)
     public OrderResponse getDetail(Long orderId){
         return createOrderResponse(orderId);
     }
 
+    @Transactional(readOnly = true)
     public Page<OrderResponse> getOrderPage(String email,int page){
         PageRequest pageRequest = createPageRequest(page);
         Page<CustomerOrder> customerOrderPage = createOrderPage(email, pageRequest);
