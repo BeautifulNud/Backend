@@ -1,4 +1,4 @@
-package ggudock.domain.order;
+package ggudock.domain.order.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QCustomerOrder extends EntityPathBase<CustomerOrder> {
 
-    private static final long serialVersionUID = 58362252L;
+    private static final long serialVersionUID = 1963198473L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -29,8 +29,12 @@ public class QCustomerOrder extends EntityPathBase<CustomerOrder> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ggudock.domain.item.entity.QItem item;
+
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
+
+    public final EnumPath<ggudock.domain.order.model.OrderStatus> orderStatus = createEnum("orderStatus", ggudock.domain.order.model.OrderStatus.class);
 
     public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
 
@@ -54,6 +58,7 @@ public class QCustomerOrder extends EntityPathBase<CustomerOrder> {
 
     public QCustomerOrder(Class<? extends CustomerOrder> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.item = inits.isInitialized("item") ? new ggudock.domain.item.entity.QItem(forProperty("item"), inits.get("item")) : null;
         this.user = inits.isInitialized("user") ? new ggudock.domain.user.entity.QUser(forProperty("user")) : null;
     }
 
