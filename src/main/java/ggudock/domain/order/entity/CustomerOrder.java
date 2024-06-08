@@ -1,5 +1,7 @@
-package ggudock.domain.order;
+package ggudock.domain.order.entity;
 
+import ggudock.domain.item.entity.Item;
+import ggudock.domain.order.model.OrderStatus;
 import ggudock.domain.user.entity.User;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -20,13 +22,25 @@ public class CustomerOrder extends BaseTimeEntity {
     @NotNull
     private int totalPrice;
 
+    private OrderStatus orderStatus;
+
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="item_id")
+    private Item item;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public CustomerOrder(int totalPrice, User user) {
+    public CustomerOrder(int totalPrice,Item item, User user,OrderStatus orderStatus) {
         this.totalPrice = totalPrice;
+        this.item = item;
         this.user = user;
+        this.orderStatus = orderStatus;
+    }
+
+    public void acceptStatus(OrderStatus orderStatus){
+        this.orderStatus=orderStatus;
     }
 }

@@ -44,8 +44,6 @@ public class QItem extends EntityPathBase<Item> {
 
     public final StringPath name = createString("name");
 
-    public final ListPath<ggudock.domain.order.OrderItem, ggudock.domain.order.QOrderItem> orderItemList = this.<ggudock.domain.order.OrderItem, ggudock.domain.order.QOrderItem>createList("orderItemList", ggudock.domain.order.OrderItem.class, ggudock.domain.order.QOrderItem.class, PathInits.DIRECT2);
-
     public final StringPath plan = createString("plan");
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);

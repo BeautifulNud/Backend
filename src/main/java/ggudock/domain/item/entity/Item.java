@@ -3,7 +3,6 @@ package ggudock.domain.item.entity;
 import ggudock.domain.cart.entity.Cart;
 import ggudock.domain.category.entity.Category;
 import ggudock.domain.company.entity.Company;
-import ggudock.domain.order.OrderItem;
 import ggudock.domain.review.entity.Review;
 import ggudock.domain.subscription.entity.Subscription;
 import ggudock.util.BaseTimeEntity;
@@ -48,12 +47,10 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item")
     private List<Subscription> subscriptionList;
     @OneToMany(mappedBy = "item")
-    private List<OrderItem> orderItemList;
-    @OneToMany(mappedBy = "item")
     private List<Review> reviewList;
 
     @Builder
-    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<OrderItem> orderItemList, List<Review> reviewList) {
+    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<Review> reviewList) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -68,7 +65,6 @@ public class Item extends BaseTimeEntity {
         this.itemImageList = itemImageList;
         this.cartList = cartList;
         this.subscriptionList = subscriptionList;
-        this.orderItemList = orderItemList;
         this.reviewList = reviewList;
     }
 
