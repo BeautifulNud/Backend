@@ -53,7 +53,7 @@ public class PaymentController {
         return new ResponseEntity<>(paymentService.cancelPayment(paymentKey,cancelReason),HttpStatusCode.valueOf(200));
     }
 
-    @Operation(summary = "토스 결제취소",description = "결제 취소")
+    @Operation(summary = "결제 한개 받기",description = "결제한거 받기")
     @GetMapping("")
     public ResponseEntity<PaymentResponse> getDetail(@RequestParam("paymentId") Long paymentId) throws Exception {
         return new ResponseEntity<>(paymentService.getDetail(paymentId),HttpStatusCode.valueOf(200));

@@ -3,6 +3,7 @@ package ggudock.domain.payment.application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ggudock.config.PaymentConfig;
 import ggudock.domain.order.entity.CustomerOrder;
+import ggudock.domain.order.model.OrderStatus;
 import ggudock.domain.order.repository.OrderRepository;
 import ggudock.domain.payment.api.dto.PaymentRequest;
 import ggudock.domain.payment.application.dto.CancelResponse;
@@ -68,6 +69,8 @@ public class PaymentService {
     public SuccessResponse successPayment(String paymentKey, String orderId, int amount) throws Exception {
         checkOrder(paymentKey, orderId, amount);
         String result = finalPayment(paymentKey, orderId, amount);
+        CustomerOrder order = getOrder(orderId);
+        order.acceptStatus(OrderStatus.YES);
         return getSuccessResponseFromJson(result);
     }
 
@@ -94,6 +97,8 @@ public class PaymentService {
 
     public FailResponse failPayment(String errorCode, String errorMessage, String orderId) {
         Payment payment = getPaymentByOrderId(orderId);
+        CustomerOrder order = getOrder(orderId);
+        order.acceptStatus(OrderStatus.NO);
         payment.failPayment();
         return createFailResponse(errorCode, errorMessage, orderId);
     }
