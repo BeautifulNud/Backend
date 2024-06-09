@@ -11,16 +11,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomerOrder extends BaseTimeEntity {
     @Id
-    @Column(name ="order_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "order_id")
+    private String orderId;
     @NotNull
     private int totalPrice;
+    private LocalDate orderDate;
 
     private OrderStatus orderStatus;
 
@@ -34,10 +37,12 @@ public class CustomerOrder extends BaseTimeEntity {
 
     @Builder
     public CustomerOrder(int totalPrice,Item item, User user,OrderStatus orderStatus) {
+        orderId = UUID.randomUUID().toString();
         this.totalPrice = totalPrice;
         this.item = item;
         this.user = user;
         this.orderStatus = orderStatus;
+        this.orderDate = LocalDate.now();
     }
 
     public void acceptStatus(OrderStatus orderStatus){

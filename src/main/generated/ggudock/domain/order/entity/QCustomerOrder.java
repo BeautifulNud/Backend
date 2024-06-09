@@ -27,12 +27,14 @@ public class QCustomerOrder extends EntityPathBase<CustomerOrder> {
     //inherited
     public final StringPath createdAt = _super.createdAt;
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     public final ggudock.domain.item.entity.QItem item;
 
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
+
+    public final DatePath<java.time.LocalDate> orderDate = createDate("orderDate", java.time.LocalDate.class);
+
+    public final StringPath orderId = createString("orderId");
 
     public final EnumPath<ggudock.domain.order.model.OrderStatus> orderStatus = createEnum("orderStatus", ggudock.domain.order.model.OrderStatus.class);
 

@@ -40,14 +40,14 @@ public class OrderController {
 
     @Operation(summary = "주문 삭제",description = "주문을 삭제한다.")
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<?> deleteOrder(@PathVariable("orderId") Long orderId){
+    public ResponseEntity<?> deleteOrder(@PathVariable("orderId") String orderId){
         orderService.deleteOrder(orderId);
         return new ResponseEntity<>(null,HttpStatusCode.valueOf(204));
     }
 
     @Operation(summary = "주문 받기",description = "한개의 주문을 받기")
     @GetMapping()
-    public ResponseEntity<OrderResponse> getDetail(@RequestParam("orderId") Long orderId){
+    public ResponseEntity<OrderResponse> getDetail(@RequestParam("orderId") String orderId){
         return new ResponseEntity<>(orderService.getDetail(orderId),HttpStatusCode.valueOf(200));
     }
 

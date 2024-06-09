@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -46,12 +45,12 @@ public class OrderService {
         orderRepository.save(customerOrder);
     }
 
-    public void deleteOrder(Long orderId){
+    public void deleteOrder(String orderId){
         delete(orderId);
     }
 
     @Transactional(readOnly = true)
-    public OrderResponse getDetail(Long orderId){
+    public OrderResponse getDetail(String orderId){
         return createOrderResponse(orderId);
     }
 
@@ -62,19 +61,20 @@ public class OrderService {
         return createOrderResponsePage(customerOrderPage);
     }
 
-    private void delete(Long orderId) {
+    private void delete(String orderId) {
         orderRepository.deleteById(orderId);
     }
 
-    private OrderResponse createOrderResponse(Long orderId) {
+    private OrderResponse createOrderResponse(String orderId) {
         CustomerOrder order = getOrder(orderId);
         return OrderResponse.builder()
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus())
+                .orderDate(order.getOrderDate())
                 .build();
     }
 
-    private CustomerOrder getOrder(Long orderId) {
+    private CustomerOrder getOrder(String orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_ORDER));
     }
