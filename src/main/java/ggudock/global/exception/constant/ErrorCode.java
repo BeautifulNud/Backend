@@ -15,6 +15,8 @@ public enum ErrorCode {
     NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
     NOT_FOUND_COMPANY(HttpStatus.NOT_FOUND, "업체를 찾을 수 없습니다."),
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
+    NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "결제를 찾을 수 없습니다."),
+    NOT_MATCH_AMOUNT(HttpStatus.BAD_REQUEST,"금액이 다릅니다."),
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "주소를 찾을 수 없습니다."),
     NOT_FOUND_Subscription(HttpStatus.NOT_FOUND, "해당 구독을 찾을 수 없습니다."),
