@@ -1,4 +1,4 @@
-package ggudock.domain.item.entity;
+package ggudock.domain.review.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QItemImage is a Querydsl query type for ItemImage
+ * QReviewImage is a Querydsl query type for ReviewImage
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QItemImage extends EntityPathBase<ItemImage> {
+public class QReviewImage extends EntityPathBase<ReviewImage> {
 
-    private static final long serialVersionUID = 1072063060L;
+    private static final long serialVersionUID = 259560138L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QItemImage itemImage = new QItemImage("itemImage");
+    public static final QReviewImage reviewImage = new QReviewImage("reviewImage");
 
     public final ggudock.util.QBaseTimeEntity _super = new ggudock.util.QBaseTimeEntity(this);
 
@@ -31,30 +31,30 @@ public class QItemImage extends EntityPathBase<ItemImage> {
 
     public final StringPath imageUrl = createString("imageUrl");
 
-    public final QItem item;
-
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
-    public QItemImage(String variable) {
-        this(ItemImage.class, forVariable(variable), INITS);
+    public final QReview review;
+
+    public QReviewImage(String variable) {
+        this(ReviewImage.class, forVariable(variable), INITS);
     }
 
-    public QItemImage(Path<? extends ItemImage> path) {
+    public QReviewImage(Path<? extends ReviewImage> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QItemImage(PathMetadata metadata) {
+    public QReviewImage(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QItemImage(PathMetadata metadata, PathInits inits) {
-        this(ItemImage.class, metadata, inits);
+    public QReviewImage(PathMetadata metadata, PathInits inits) {
+        this(ReviewImage.class, metadata, inits);
     }
 
-    public QItemImage(Class<? extends ItemImage> type, PathMetadata metadata, PathInits inits) {
+    public QReviewImage(Class<? extends ReviewImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.item = inits.isInitialized("item") ? new QItem(forProperty("item"), inits.get("item")) : null;
+        this.review = inits.isInitialized("review") ? new QReview(forProperty("review"), inits.get("review")) : null;
     }
 
 }
