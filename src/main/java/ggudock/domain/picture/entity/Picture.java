@@ -1,6 +1,6 @@
-package ggudock.domain.picture;
+package ggudock.domain.picture.entity;
 
 public interface Picture {
     Long getId();
-    String getPicture();
+    String getImageUrl();
 }

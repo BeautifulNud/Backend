@@ -12,7 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,15 +26,16 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 저장", description = "정보를 받아 리뷰를 저장한다.")
     @PostMapping()
-    public ResponseEntity<ReviewResponse> saveReview(@Valid @RequestBody ReviewRequest reviewRequest) {
-        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, SecurityUtil.getCurrentName()),
+    public ResponseEntity<ReviewResponse> saveReview(@Valid @ModelAttribute("reviewRequest") ReviewRequest reviewRequest,
+                                                     @RequestPart(required = false,value = "image") List<MultipartFile> image) throws IOException {
+        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, SecurityUtil.getCurrentName(), image),
                 HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "리뷰 삭제", description = "리뷰 Id를 받아 리뷰를 삭제한다.")
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Long> deleteReview(@PathVariable("reviewId") Long reviewId) {
-        return new ResponseEntity<>(reviewService.delete(reviewId), HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(reviewService.delete(reviewId, SecurityUtil.getCurrentName()), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "유저의 전체 리뷰 삭제", description = "로그인중인 유저의 전체 리뷰를 삭제한다.")
