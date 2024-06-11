@@ -22,7 +22,7 @@ public class ReviewImageService  {
 
     @Transactional
     public void save(MultipartFile image, Review review) throws IOException {
-        String fileUrl = s3UploadService.upload(image, "imgaes");
+        String fileUrl = s3UploadService.upload(image, "images");
         ReviewImage reviewImage = new ReviewImage(fileUrl, review);
         reviewImageRepository.save(reviewImage);
     }
