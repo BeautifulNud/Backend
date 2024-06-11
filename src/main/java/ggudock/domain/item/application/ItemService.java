@@ -106,6 +106,7 @@ public class ItemService {
     private Category getCategory(Long id) {
         return Category.builder().build();
     }
+
     private String getEmailByToken(String accessToken) {
 
         RestTemplate rt = new RestTemplate();
