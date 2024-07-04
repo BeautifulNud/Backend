@@ -45,12 +45,10 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item")
     private List<Cart> cartList;
     @OneToMany(mappedBy = "item")
-    private List<Subscription> subscriptionList;
-    @OneToMany(mappedBy = "item")
     private List<Review> reviewList;
 
     @Builder
-    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Subscription> subscriptionList, List<Review> reviewList) {
+    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Review> reviewList) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -64,7 +62,6 @@ public class Item extends BaseTimeEntity {
         this.company = company;
         this.itemImageList = itemImageList;
         this.cartList = cartList;
-        this.subscriptionList = subscriptionList;
         this.reviewList = reviewList;
     }
 

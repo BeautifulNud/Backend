@@ -31,22 +31,16 @@ public class QSubscription extends EntityPathBase<Subscription> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ggudock.domain.item.entity.QItem item;
-
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Long> periodDays = createNumber("periodDays", Long.class);
-
-    public final NumberPath<Integer> price = createNumber("price", Integer.class);
+    public final ggudock.domain.order.entity.QCustomerOrder order;
 
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
 
     public final EnumPath<ggudock.domain.subscription.model.State> state = createEnum("state", ggudock.domain.subscription.model.State.class);
 
     public final EnumPath<ggudock.domain.subscription.model.SubType> subType = createEnum("subType", ggudock.domain.subscription.model.SubType.class);
-
-    public final StringPath title = createString("title");
 
     public final ggudock.domain.user.entity.QUser user;
 
@@ -68,7 +62,7 @@ public class QSubscription extends EntityPathBase<Subscription> {
 
     public QSubscription(Class<? extends Subscription> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.item = inits.isInitialized("item") ? new ggudock.domain.item.entity.QItem(forProperty("item"), inits.get("item")) : null;
+        this.order = inits.isInitialized("order") ? new ggudock.domain.order.entity.QCustomerOrder(forProperty("order"), inits.get("order")) : null;
         this.user = inits.isInitialized("user") ? new ggudock.domain.user.entity.QUser(forProperty("user")) : null;
     }
 

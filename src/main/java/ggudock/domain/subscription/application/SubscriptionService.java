@@ -2,15 +2,15 @@ package ggudock.domain.subscription.application;
 
 import ggudock.domain.address.entity.Address;
 import ggudock.domain.address.repository.AddressRepository;
-import ggudock.domain.item.entity.Item;
-import ggudock.domain.item.repository.ItemRepository;
+import ggudock.domain.order.entity.CustomerOrder;
+import ggudock.domain.order.repository.OrderRepository;
 import ggudock.domain.subscription.api.dto.SubscriptionDayRequest;
 import ggudock.domain.subscription.api.dto.SubscriptionPeriodRequest;
 import ggudock.domain.subscription.application.component.ExistSubscription;
+import ggudock.domain.subscription.application.dto.DateResponse;
 import ggudock.domain.subscription.application.dto.SubscriptionResponse;
 import ggudock.domain.subscription.entity.Subscription;
 import ggudock.domain.subscription.entity.SubscriptionSchedule;
-import ggudock.domain.subscription.model.ScheduleState;
 import ggudock.domain.subscription.model.State;
 import ggudock.domain.subscription.model.SubType;
 import ggudock.domain.subscription.repository.SubscriptionScheduleRepository;
@@ -28,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -39,68 +41,77 @@ public class SubscriptionService {
     private final SubscriptionScheduleRepository subscriptionScheduleRepository;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
     private final ExistSubscription existSubscription;
 
-    public boolean saveSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, String email, Long addressId, Long itemId){
+    public void saveSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, String email, Long addressId, String orderId) {
         User user = getUser(email);
         Address address = getAddress(addressId);
-        Item item = getItem(itemId);
-        Subscription saveSubscription = saveSubscriptionByPeriod(subscriptionRequest, user, item);
-        existSubscription.setExistSubscription(false);
+        CustomerOrder order = getOrder(orderId);
+        Subscription saveSubscription = saveSubscriptionByPeriod(subscriptionRequest, user, order);
         createPeriodSubscriptionDates(subscriptionRequest, saveSubscription, address);
-        createPrice(saveSubscription);
-        return existSubscription.isExistSubscription();
     }
 
-    public boolean saveSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, String email, Long addressId, Long itemId){
+    private CustomerOrder getOrder(String orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_ORDER));
+    }
+
+    public void saveSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, String email, Long addressId, String orderId) {
         User user = getUser(email);
         Address address = getAddress(addressId);
-        Item item = getItem(itemId);
-        Subscription saveSubscription = saveSubscriptionByDay(subscriptionRequest, user, item);
-        existSubscription.setExistSubscription(false);
+        CustomerOrder order = getOrder(orderId);
+        Subscription saveSubscription = saveSubscriptionByDay(subscriptionRequest, user, order);
         List<LocalDate> dates = subscriptionRequest.getDates();
-        checkExistSubscription(addressId, dates);
         createDaySubscriptionDates(saveSubscription, dates, address);
-        createPrice(saveSubscription);
-        return existSubscription.isExistSubscription();
+    }
+//    private void checkExistSubscription(Long addressId, List<LocalDate> dates) {
+//        for (LocalDate date : dates) {
+//            if (existDateSubscription(addressId, date)) {
+//                changeState();
+//                break;
+//            }
+//        }
+//    }
+
+    @Transactional(readOnly = true)
+    public List<DateResponse> getSubscriptionByEmail(String email){
+        List<Subscription> subscriptionList = findSubscriptionByEmail(email);
+        return getDates(subscriptionList);
     }
 
-    private void createPrice(Subscription saveSubscription) {
-        Integer price = subscriptionRepository.createPrice(saveSubscription.getId());
-        saveSubscription.createPrice(price);
-    }
-
-    private void checkExistSubscription(Long addressId, List<LocalDate> dates) {
-        for (LocalDate date : dates) {
-            if (existDaySubscription(addressId, date)) {
-                changeState();
-                break;
-            }
+    private List<DateResponse> getDates(List<Subscription> subscriptionList) {
+        List<DateResponse> dateResponseList = new ArrayList<>();
+        for(Subscription s : subscriptionList){
+            DateResponse dates = subscriptionRepository.findDates(s.getId());
+            if(!dates.getDates().isEmpty())
+                dateResponseList.add(dates);
         }
+        return dateResponseList;
     }
 
-    private Subscription saveSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, User user, Item item) {
-        Subscription subscription = createSubscriptionByDay(subscriptionRequest, user, item);
+    private List<Subscription> findSubscriptionByEmail(String email) {
+        return subscriptionRepository.findSubscriptionByUser_Email(email);
+    }
+
+
+    private Subscription saveSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, User user, CustomerOrder order) {
+        Subscription subscription = createSubscriptionByDay(subscriptionRequest, user, order);
         return save(subscription);
     }
 
-    private Subscription saveSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, User user, Item item) {
-        Subscription subscription = createSubscriptionByPeriod(subscriptionRequest, user, item);
+    private Subscription saveSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, User user, CustomerOrder order) {
+        Subscription subscription = createSubscriptionByPeriod(subscriptionRequest, user, order);
         return save(subscription);
     }
 
-    private void changeState() {
-        existSubscription.setExistSubscription(true);
-    }
-    private Item getItem(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_ITEM));
-    }
-
-    private boolean existDaySubscription(Long addressId, LocalDate date) {
-        return subscriptionScheduleRepository.existsByAddress_IdAndDateAndScheduleState(addressId, date, ScheduleState.ON);
-    }
+//    private void changeState() {
+//        existSubscription.setExistSubscription(true);
+//    }
+//
+//    private boolean existDateSubscription(Long addressId, LocalDate date) {
+//        return subscriptionScheduleRepository.existsByAddress_IdAndDateAndScheduleState(addressId, date, ScheduleState.ON);
+//    }
 
 
     private Address getAddress(Long addressId) {
@@ -136,9 +147,9 @@ public class SubscriptionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SubscriptionResponse> getSubscriptionPage(String email,int page) {
+    public Page<SubscriptionResponse> getSubscriptionPage(String email, int page) {
         PageRequest pageRequest = createPageRequest(page);
-        Page<Subscription> subscriptionPage = createSubscriptionPage(email,pageRequest);
+        Page<Subscription> subscriptionPage = createSubscriptionPage(email, pageRequest);
         return createSubscriptionResponsePage(subscriptionPage);
     }
 
@@ -187,57 +198,57 @@ public class SubscriptionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<SubscriptionResponse> getSubscriptionPageByTitle(String title, String email, int page) {
+    public Page<SubscriptionResponse> getSubscriptionPageByName(String itemName, String email, int page) {
         PageRequest pageRequest = createPageRequest(page);
-        Page<Subscription> subscriptionPage = createSubscriptionPageByTitle(title, pageRequest, email);
+        Page<Subscription> subscriptionPage = createSubscriptionPageByName(itemName, pageRequest, email);
         return createSubscriptionResponsePage(subscriptionPage);
     }
 
-    private static Subscription createSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, User user,Item item) {
+    private static Subscription createSubscriptionByDay(SubscriptionDayRequest subscriptionRequest, User user, CustomerOrder order) {
+        List<LocalDate> subDate = createSubDate(subscriptionRequest);
         return Subscription.builder()
                 .state(State.ON)
                 .subType(SubType.DAY)
-                .startDate(subscriptionRequest.getStartDate())
-                .endDate(subscriptionRequest.getEndDate())
-                .title(subscriptionRequest.getTitle())
+                .startDate(subDate.get(0))
+                .endDate(subDate.get(1))
                 .user(user)
-                .item(item)
+                .order(order)
                 .build();
     }
 
-    private static Subscription createSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, User user,Item item) {
+    private static List<LocalDate> createSubDate(SubscriptionDayRequest subscriptionRequest) {
+        List<LocalDate> dates = subscriptionRequest.getDates();
+        Collections.sort(dates);
+        List<LocalDate> createDate = new ArrayList<>();
+        createDate.add(dates.get(0));
+        createDate.add(dates.get(dates.size()-1));
+        return createDate;
+    }
+
+    private static Subscription createSubscriptionByPeriod(SubscriptionPeriodRequest subscriptionRequest, User user, CustomerOrder order) {
         return Subscription.builder()
                 .state(State.ON)
                 .subType(SubType.PERIOD)
                 .startDate(subscriptionRequest.getStartDate())
                 .endDate(subscriptionRequest.getEndDate())
-                .title(subscriptionRequest.getTitle())
                 .user(user)
-                .item(item)
+                .order(order)
                 .build();
     }
 
 
     private SubscriptionResponse createSubscriptionResponse(Long subscriptionId) {
         Subscription subscription = getSubscription(subscriptionId);
-        return SubscriptionResponse.builder()
-                .state(subscription.getState())
-                .subType(subscription.getSubType())
-                .periodDays(subscription.getPeriodDays())
-                .startDate(subscription.getStartDate())
-                .endDate(subscription.getEndDate())
-                .title(subscription.getTitle())
-                .price(subscription.getPrice())
-                .build();
+        return new SubscriptionResponse(subscription);
     }
 
     // 구독 전체 페이징
-    private Page<Subscription> createSubscriptionPage(String email,PageRequest pageRequest) {
-        return subscriptionRepository.findAllByUser_Email(email,pageRequest);
+    private Page<Subscription> createSubscriptionPage(String email, PageRequest pageRequest) {
+        return subscriptionRepository.findAllByUser_Email(email, pageRequest);
     }
 
     /**
-     구독 생성할때 구독 날짜 저장하는 메서드들
+     * 구독 생성할때 구독 날짜 저장하는 메서드들
      */
 
     private void createDaySubscriptionDates(Subscription subscription, List<LocalDate> dates, Address address) {
@@ -265,8 +276,6 @@ public class SubscriptionService {
         while (!date.isAfter(subscription.getEndDate())) {
             for (DayOfWeek day : days) {
                 if (day.equals(DayOfWeek.of(date.getDayOfWeek().getValue()))) {
-                    if (existDaySubscription(address.getId(), date))
-                        changeState();
                     SubscriptionSchedule subscriptionSchedule = createSubscriptionDate(subscription, date, address);
                     saveSubscriptionSchedule(subscriptionSchedule);
                 }
@@ -276,7 +285,7 @@ public class SubscriptionService {
     }
 
     /**
-     *  구독 상태 바꾸는 메서드들
+     * 구독 상태 바꾸는 메서드들
      */
     private void changeOffDaySubscription(Long subscriptionId, Subscription subscription) {
         List<SubscriptionSchedule> subscriptionScheduleList = getSubscriptionDateList(subscriptionId);
@@ -302,7 +311,7 @@ public class SubscriptionService {
     }
 
     /**
-     *  구독 페이징 처리하는 메서드들
+     * 구독 페이징 처리하는 메서드들
      */
 
     private static Page<SubscriptionResponse> createSubscriptionResponsePage(Page<Subscription> subscriptionPage) {
@@ -333,7 +342,7 @@ public class SubscriptionService {
         return subscriptionRepository.findAllBySubTypeAndUser_Email(SubType.DAY, email, pageRequest);
     }
 
-    private Page<Subscription> createSubscriptionPageByTitle(String title, PageRequest pageRequest, String email) {
-        return subscriptionRepository.findAllByTitleAndUser_Email(title, email, pageRequest);
+    private Page<Subscription> createSubscriptionPageByName(String itemName, PageRequest pageRequest, String email) {
+        return subscriptionRepository.findAllByOrder_Item_NameAndUser_Email(itemName, email, pageRequest);
     }
 }

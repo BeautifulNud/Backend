@@ -1,6 +1,6 @@
 package ggudock.domain.subscription.entity;
 
-import ggudock.domain.item.entity.Item;
+import ggudock.domain.order.entity.CustomerOrder;
 import ggudock.domain.subscription.model.State;
 import ggudock.domain.subscription.model.SubType;
 import ggudock.domain.user.entity.User;
@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -29,37 +28,28 @@ public class Subscription extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private SubType subType;
 
-    private String title;
-
-    private long periodDays;
     private LocalDate startDate;
     private LocalDate endDate;
-    private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @JoinColumn(name = "order_id")
+    private CustomerOrder order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Subscription(State state, SubType subType, LocalDate startDate, LocalDate endDate, Item item, User user,String title) {
+    public Subscription(State state, SubType subType, LocalDate startDate, LocalDate endDate, CustomerOrder order, User user) {
         this.state = state;
         this.subType = subType;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.item = item;
+        this.order = order;
         this.user = user;
-        this.periodDays = ChronoUnit.DAYS.between(startDate,endDate);
-        this.title = title;
     }
 
     public void offSubscription(){
         this.state = State.OFF;
-    }
-    public void createPrice(int price){
-        this.price = price;
     }
 }

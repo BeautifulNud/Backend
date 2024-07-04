@@ -12,10 +12,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class SubscriptionDayRequest {
-    private LocalDate startDate;
-    private LocalDate endDate;
-    @TitleValid
-    private String title;
     private List<LocalDate> dates;
 
     public SubscriptionDayRequest() {

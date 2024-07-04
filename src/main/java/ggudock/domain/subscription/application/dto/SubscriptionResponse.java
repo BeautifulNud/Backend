@@ -16,20 +16,18 @@ public class SubscriptionResponse {
 
     private State state;
     private SubType subType;
-    private long periodDays;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String title;
+    private String itemName;
     private int price;
 
     @Builder
     public SubscriptionResponse(Subscription subscription) {
         this.state = subscription.getState();
         this.subType = subscription.getSubType();
-        this.periodDays = subscription.getPeriodDays();
         this.startDate = subscription.getStartDate();
         this.endDate = subscription.getEndDate();
-        this.price = subscription.getPrice();
-        this.title = subscription.getTitle();
+        this.price = subscription.getOrder().getTotalPrice();
+        this.itemName = subscription.getOrder().getItem().getName();
     }
 }

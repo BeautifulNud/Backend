@@ -54,8 +54,6 @@ public class QItem extends EntityPathBase<Item> {
 
     public final NumberPath<Integer> salePercent = createNumber("salePercent", Integer.class);
 
-    public final ListPath<ggudock.domain.subscription.entity.Subscription, ggudock.domain.subscription.entity.QSubscription> subscriptionList = this.<ggudock.domain.subscription.entity.Subscription, ggudock.domain.subscription.entity.QSubscription>createList("subscriptionList", ggudock.domain.subscription.entity.Subscription.class, ggudock.domain.subscription.entity.QSubscription.class, PathInits.DIRECT2);
-
     public final StringPath thumbnail = createString("thumbnail");
 
     public final NumberPath<Long> views = createNumber("views", Long.class);
