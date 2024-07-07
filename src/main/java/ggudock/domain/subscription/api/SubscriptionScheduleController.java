@@ -79,11 +79,11 @@ public class SubscriptionScheduleController {
     }
 
     @Operation(summary = "구독 제목으로 구독 스케줄 받기", description = "구독제목으로 구독 스케줄을 Page 로 받는다.")
-    @GetMapping("/search-title")
-    public ResponseEntity<Page<SubscriptionScheduleResponse>> getSubscriptionDatePageByTitle(@RequestParam("title") String title,
+    @GetMapping("/search-name")
+    public ResponseEntity<Page<SubscriptionScheduleResponse>> getSubscriptionDatePageByTitle(@RequestParam("name") String name,
                                                                                              @RequestParam("state") ScheduleState state,
                                                                                              @RequestParam(value = "page", defaultValue = "0") int page) {
-        return new ResponseEntity<>(subscriptionScheduleService.getSubscriptionSchedulePageByTitle(title, SecurityUtil.getCurrentName(), state, page),
+        return new ResponseEntity<>(subscriptionScheduleService.getSubscriptionSchedulePageByTitle(name, SecurityUtil.getCurrentName(), state, page),
                 HttpStatusCode.valueOf(200));
     }
 

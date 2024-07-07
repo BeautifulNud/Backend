@@ -15,8 +15,6 @@ import java.util.List;
 public class SubscriptionPeriodRequest {
     private LocalDate startDate;
     private LocalDate endDate;
-    @TitleValid
-    private String title;
     private List<DayOfWeek> days;
 
     public SubscriptionPeriodRequest() {
