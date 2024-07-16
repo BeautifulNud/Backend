@@ -24,8 +24,6 @@ public class QCart extends EntityPathBase<Cart> {
 
     public final ggudock.util.QBaseTimeEntity _super = new ggudock.util.QBaseTimeEntity(this);
 
-    public final EnumPath<ggudock.domain.cart.model.Category> category = createEnum("category", ggudock.domain.cart.model.Category.class);
-
     //inherited
     public final StringPath createdAt = _super.createdAt;
 

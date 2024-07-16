@@ -22,8 +22,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-import static ggudock.domain.cart.model.Category.DIB;
-
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -57,7 +55,7 @@ public class ItemService {
 
     public ItemDetailResponse getDetailWithToken(String token, Long itemId) {
         String email = getEmailByToken(token);
-        Cart cart = getCart(itemId);
+//        Cart cart = getCart(itemId);
         // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
         return createResponse(itemId);
     }
@@ -93,9 +91,9 @@ public class ItemService {
     }
 
     // TODO repo 개발 시 연결
-    private Cart getCart(Long id) {
-        return Cart.builder().category(DIB).build();
-    }
+//    private Cart getCart(Long id) {
+//        return Cart.builder().category(DIB).build();
+//    }
 
     // TODO repo 개발 시 연결
     private Company getCompany(Long id) {
