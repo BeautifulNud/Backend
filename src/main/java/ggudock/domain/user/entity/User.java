@@ -1,11 +1,8 @@
 package ggudock.domain.user.entity;
 
-import ggudock.config.oauth.entity.ProviderType;
-import ggudock.config.oauth.entity.Role;
-import ggudock.domain.user.dto.Request.UserRequest;
+import ggudock.domain.user.dto.UserEditRequest;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,53 +16,39 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
-    @Column(name = "user_name")
-    @NotNull
-    private String username;
 
-    @Column(unique = true)
-    @NotNull
-    private String nickname;
+    @Column(nullable = false, length = 10)
+    private String name;
 
-    private String password;
-
-    @NotNull
+    @Column(nullable = false, length = 40, unique = true)
     private String email;
 
-    private String imageUrl;
+    @Column(nullable = false)
+    private String profile;
+
+    @Column(nullable = false, unique = true)
+    private String userKey;
 
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "oauth_provider", nullable = false)
-    private ProviderType providerType;
-
     @Builder
-    public User(Long id, String username, String nickname, String password, String email, String imageUrl, String phoneNumber, Role role, ProviderType providerType) {
+    public User(Long id, String name, String email, String profile, String userKey, String phoneNumber, Role role) {
         this.id = id;
-        this.username = username;
-        this.nickname = nickname;
-        this.password = password;
+        this.name = name;
         this.email = email;
-        this.imageUrl = imageUrl;
+        this.profile = profile;
+        this.userKey = userKey;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.providerType = providerType;
     }
 
-    public void updateUsername(String username) {
-        this.username = username;
+    public void updateUser(UserEditRequest request) {
+        this.name = request.name();
+        this.phoneNumber = request.phoneNumber();
     }
-
-    public void signupUser(UserRequest.SignUp request) {
-        this.nickname = request.getNickname();
-        this.phoneNumber = request.getPhoneNumber();
-    }
-
 }

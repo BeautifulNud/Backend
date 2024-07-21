@@ -1,12 +1,13 @@
 package ggudock.config.oauth.utils;
 
-import ggudock.config.oauth.entity.UserPrincipal;
 import ggudock.global.exception.BusinessException;
 import ggudock.global.exception.constant.ErrorCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.nio.file.attribute.UserPrincipal;
 
 @Slf4j
 @NoArgsConstructor
