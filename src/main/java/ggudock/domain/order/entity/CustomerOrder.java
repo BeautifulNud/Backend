@@ -25,6 +25,7 @@ public class CustomerOrder extends BaseTimeEntity {
     private int totalPrice;
     private LocalDate orderDate;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @OneToOne(fetch=FetchType.LAZY)

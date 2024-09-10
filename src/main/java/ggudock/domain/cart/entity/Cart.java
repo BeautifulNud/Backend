@@ -1,6 +1,5 @@
 package ggudock.domain.cart.entity;
 
-import ggudock.domain.cart.model.Category;
 import ggudock.domain.item.entity.Item;
 import ggudock.domain.user.entity.User;
 import ggudock.util.BaseTimeEntity;
@@ -19,9 +18,6 @@ public class Cart extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
@@ -30,8 +26,7 @@ public class Cart extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Cart(Category category, Item item, User user) {
-        this.category = category;
+    public Cart(Item item, User user) {
         this.item = item;
         this.user = user;
     }
