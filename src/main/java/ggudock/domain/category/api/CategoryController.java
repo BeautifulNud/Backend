@@ -3,6 +3,7 @@ package ggudock.domain.category.api;
 import ggudock.domain.category.api.request.CategoryRequest;
 import ggudock.domain.category.application.CategoryService;
 import ggudock.domain.category.application.response.CategoryResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "카테고리", description = "카테고리 api")
 @RequestMapping("/api/category")
 public class CategoryController {
 

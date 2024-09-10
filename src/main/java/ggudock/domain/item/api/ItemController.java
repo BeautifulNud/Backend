@@ -7,6 +7,7 @@ import ggudock.domain.item.strategy.OrderByStrategy;
 import ggudock.domain.item.entity.orderby.Review;
 import ggudock.domain.item.entity.orderby.View;
 import ggudock.global.exception.BusinessException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import static ggudock.global.exception.constant.ErrorCode.BAD_REQUEST;
 
 @RestController
 @RequestMapping("/api/item")
+@Tag(name = "아이템", description = "아이템 api")
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;

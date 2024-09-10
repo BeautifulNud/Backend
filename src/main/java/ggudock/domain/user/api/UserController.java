@@ -1,6 +1,5 @@
 package ggudock.domain.user.api;
 
-import ggudock.auth.annotaion.RoleUser;
 import ggudock.domain.user.application.UserService;
 import ggudock.domain.user.dto.UserEditRequest;
 import ggudock.domain.user.dto.model.UserDto;

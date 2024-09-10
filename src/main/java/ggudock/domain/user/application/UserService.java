@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
+    public User getUser(String email){
+        return findByEmailOrThrow(email);
+    }
+
     public UserDto userInfo(String eamil) {
         User user = findByEmailOrThrow(eamil);
         return UserDto.fromEntity(user);

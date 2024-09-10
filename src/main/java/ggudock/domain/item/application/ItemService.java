@@ -8,6 +8,11 @@ import ggudock.domain.item.dto.ItemDetailResponse;
 import ggudock.domain.item.entity.Item;
 import ggudock.domain.item.repository.ItemRepository;
 import ggudock.domain.item.strategy.OrderByStrategy;
+import ggudock.domain.user.application.UserService;
+import ggudock.domain.user.entity.User;
+import ggudock.domain.user.repository.UserRepository;
+import ggudock.global.exception.BusinessException;
+import ggudock.global.exception.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     public List<ItemDetailResponse> getList() {
         return itemRepository.findAll().stream()
@@ -45,7 +51,7 @@ public class ItemService {
     }
 
     public ItemDetailResponse getDetailWithToken(String email, Long itemId) {
-        Cart cart = getCart(itemId);
+        Cart cart = getCart(email, itemId);
         // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
         return createResponse(itemId);
     }
@@ -75,15 +81,26 @@ public class ItemService {
                 .build();
     }
 
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
+    }
+
     private Item getItem(Long id) {
         return itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("요청하신 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_ITEM));
     }
 
     // TODO repo 개발 시 연결
-//    private Cart getCart(Long id) {
-//        return Cart.builder().category(DIB).build();
-//    }
+    private Cart getCart(String email, Long itemId) {
+        User user = getUser(email);
+        Item item = getItem(itemId);
+
+        return Cart.builder()
+                .user(user)
+                .item(item)
+                .build();
+    }
 
     // TODO repo 개발 시 연결
     private Company getCompany(Long id) {
