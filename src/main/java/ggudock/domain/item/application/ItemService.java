@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static ggudock.domain.cart.model.Category.DIB;
-
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -83,9 +81,9 @@ public class ItemService {
     }
 
     // TODO repo 개발 시 연결
-    private Cart getCart(Long id) {
-        return Cart.builder().category(DIB).build();
-    }
+//    private Cart getCart(Long id) {
+//        return Cart.builder().category(DIB).build();
+//    }
 
     // TODO repo 개발 시 연결
     private Company getCompany(Long id) {

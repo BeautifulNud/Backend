@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     OK(HttpStatus.OK, "정상 처리 되었습니다."),
-  
+
     DO_NOT_LOGIN(HttpStatus.NOT_FOUND, "현재 로그인중이 아닙니다."),
 
     // auth
@@ -24,18 +24,20 @@ public enum ErrorCode {
     NOT_FOUND_COMPANY(HttpStatus.NOT_FOUND, "업체를 찾을 수 없습니다."),
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
     NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "결제를 찾을 수 없습니다."),
-    NOT_MATCH_AMOUNT(HttpStatus.BAD_REQUEST,"금액이 다릅니다."),
+    NOT_MATCH_AMOUNT(HttpStatus.BAD_REQUEST, "금액이 다릅니다."),
+    NOT_FOUND_CART(HttpStatus.NOT_FOUND, "찜을 찾을수 없습나니다."),
+    DUPLICATED_CART(HttpStatus.CREATED, "이미 찜을 했습니다."),
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "주소를 찾을 수 없습니다."),
     NOT_FOUND_Subscription(HttpStatus.NOT_FOUND, "해당 구독을 찾을 수 없습니다."),
-    NOT_FOUND_Subscription_DATE(HttpStatus.NOT_FOUND,"해당 날짜로 된 구독을 찾을수 없습니다."),
+    NOT_FOUND_Subscription_DATE(HttpStatus.NOT_FOUND, "해당 날짜로 된 구독을 찾을수 없습니다."),
     NOT_FOUND_DEFAULT_ADDRESS(HttpStatus.NOT_FOUND, "기본 배송지가 설정되어 있지 않습니다."),
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
 
     DUPLICATED_USER(HttpStatus.CREATED, "이미 존재하는 회원입니다."),
     DUPLICATED_ADDRESS(HttpStatus.CREATED, "이미 저장되어 있는 배송지입니다."),
     DUPLICATED_DATE(HttpStatus.CREATED, "이미 상품 요청된 날짜입니다."), // 가정이 요청
-  
+
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "정상적인 요청이 아닙니다."),
     NO_ACCESS(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다."),

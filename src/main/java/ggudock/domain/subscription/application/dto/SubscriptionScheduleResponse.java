@@ -16,14 +16,14 @@ public class SubscriptionScheduleResponse {
 
     private LocalDate date;
     private DayOfWeek day;
-    private String title;
+    private String itemName;
     private ScheduleState scheduleState;
 
     @Builder
     public SubscriptionScheduleResponse(SubscriptionSchedule subscriptionSchedule) {
         this.date = subscriptionSchedule.getDate();
         this.day = subscriptionSchedule.getDay();
-        this.title = subscriptionSchedule.getSubscription().getTitle();
+        this.itemName = subscriptionSchedule.getSubscription().getOrder().getItem().getName();
         this.scheduleState = subscriptionSchedule.getScheduleState();
     }
 }

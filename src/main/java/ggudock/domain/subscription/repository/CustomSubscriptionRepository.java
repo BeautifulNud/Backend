@@ -1,8 +1,11 @@
 package ggudock.domain.subscription.repository;
 
+import ggudock.domain.subscription.application.dto.DateResponse;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface CustomSubscriptionRepository {
-    Integer createPrice(Long subscriptionId);
+    DateResponse findDates(Long subscriptionId);
 }

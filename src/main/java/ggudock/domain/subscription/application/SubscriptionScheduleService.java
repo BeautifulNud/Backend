@@ -104,12 +104,7 @@ public class SubscriptionScheduleService {
 
     private SubscriptionScheduleResponse createResponse(Long subscriptionDateId) {
         SubscriptionSchedule subscriptionSchedule = getSubscriptionSchedule(subscriptionDateId);
-        return SubscriptionScheduleResponse.builder()
-                .date(subscriptionSchedule.getDate())
-                .day(subscriptionSchedule.getDay())
-                .scheduleState(subscriptionSchedule.getScheduleState())
-                .title(subscriptionSchedule.getSubscription().getTitle())
-                .build();
+        return new SubscriptionScheduleResponse(subscriptionSchedule);
     }
 
     /**
@@ -141,8 +136,8 @@ public class SubscriptionScheduleService {
         return subscriptionScheduleRepository.findAllByDateBetweenAndSubscription_User_EmailAndScheduleState(start, end, email, state, pageRequest);
     }
 
-    private Page<SubscriptionSchedule> createSubscriptionSchedulePageByTitle(String title, String email, ScheduleState state, PageRequest pageRequest) {
-        return subscriptionScheduleRepository.findAllBySubscription_TitleAndSubscription_User_EmailAndScheduleState(title, email, state, pageRequest);
+    private Page<SubscriptionSchedule> createSubscriptionSchedulePageByTitle(String name, String email, ScheduleState state, PageRequest pageRequest) {
+        return subscriptionScheduleRepository.findAllBySubscription_Order_Item_NameAndSubscription_User_EmailAndScheduleState(name, email, state, pageRequest);
     }
 
     private Page<SubscriptionSchedule> createSubscriptionSchedulePageBySubscription(Long subscriptionId, String email, ScheduleState state, PageRequest pageRequest) {
