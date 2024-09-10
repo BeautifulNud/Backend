@@ -10,13 +10,16 @@ import ggudock.domain.user.entity.User;
 import ggudock.domain.user.repository.UserRepository;
 import ggudock.global.exception.BusinessException;
 import ggudock.global.exception.constant.ErrorCode;
+import ggudock.s3.application.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,12 +32,16 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     @Transactional
-    public ReviewResponse saveReview(ReviewRequest reviewRequest, String email) {
+    public ReviewResponse saveReview(ReviewRequest reviewRequest, MultipartFile image, String email) throws IOException {
         User user = getUser(email);
         Item item = getItem(reviewRequest.getItemId());
-        Review review = createReview(reviewRequest, item, user);
+
+        String filUrl = s3UploadService.upload(image, "images");
+
+        Review review = createReview(reviewRequest, item, user, filUrl);
         Review savedReview = reviewRepository.save(review);
 
         return getDetail(savedReview.getId());
@@ -47,13 +54,21 @@ public class ReviewService {
 
     @Transactional
     public Long delete(Long reviewId) {
-        reviewRepository.deleteById(reviewId);
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+        s3UploadService.fileDelete(review.getImageUrl()); //s3 사진 삭제
+        reviewRepository.delete(review);
         return reviewId;
     }
 
     @Transactional
     public void deleteList(String email) {
         List<Review> reviewList = reviewRepository.findByUser_EmailOrderByDateDesc(email);
+
+        for (Review review : reviewList) {
+            s3UploadService.fileDelete(review.getImageUrl()); //s3 사진 삭제
+        }
+
         reviewRepository.deleteAll(reviewList);
     }
 
@@ -103,7 +118,7 @@ public class ReviewService {
     }
 
     private static ReviewResponse createReviewResposnse(Review review) {
-        return new ReviewResponse(review);
+        return ReviewResponse.of(review);
     }
 
     private static PageRequest createPageRequest(int page) {
@@ -111,7 +126,7 @@ public class ReviewService {
     }
 
     private static Page<ReviewResponse> createReviewResponsePage(Page<Review> reviewPage) {
-        return reviewPage.map(ReviewResponse::new);
+        return reviewPage.map(ReviewResponse::of);
     }
 
     private Page<Review> createReviewPageByUser(PageRequest pageRequest, String email) {
@@ -141,13 +156,14 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review createReview(ReviewRequest reviewRequest, Item item, User user) {
+    public Review createReview(ReviewRequest reviewRequest, Item item, User user, String imageUrl) {
         return Review.builder()
                 .content(reviewRequest.getContent())
                 .rating(reviewRequest.getRating())
                 .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .item(item)
                 .user(user)
+                .imageUrl(imageUrl)
                 .build();
     }
 

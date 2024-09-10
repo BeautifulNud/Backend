@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, oauth, redis, toss
+    include: aws, oauth, redis, toss, s3
   jpa:
     hibernate:
       ddl-auto: update

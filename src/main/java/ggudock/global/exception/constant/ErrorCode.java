@@ -38,6 +38,7 @@ public enum ErrorCode {
     DUPLICATED_ADDRESS(HttpStatus.CREATED, "이미 저장되어 있는 배송지입니다."),
     DUPLICATED_DATE(HttpStatus.CREATED, "이미 상품 요청된 날짜입니다."), // 가정이 요청
 
+    S3_BUCKET_ERROR(HttpStatus.BAD_REQUEST, "S3 업로드 과정중 오류가 발생했습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "정상적인 요청이 아닙니다."),
     NO_ACCESS(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다."),

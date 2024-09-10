@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResponse {
     private Long itemId;
@@ -16,6 +18,7 @@ public class ReviewResponse {
     private String content;
     private float rating;
     private String date;
+    private String imageUrl;
 
     @Builder
     public ReviewResponse(Review review) {
@@ -24,5 +27,17 @@ public class ReviewResponse {
         this.content = review.getContent();
         this.rating = review.getRating();
         this.date = review.getDate();
+        this.imageUrl = review.getImageUrl();
+    }
+
+    public static ReviewResponse of(Review review) {
+        return new ReviewResponse(
+                review.getItem().getId(),
+                review.getUser().getId(),
+                review.getContent(),
+                review.getRating(),
+                review.getDate(),
+                review.getImageUrl()
+        );
     }
 }
