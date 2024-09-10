@@ -1,12 +1,13 @@
 package ggudock.config;
 
-import ggudock.auth.handler.CustomAccessDeniedHandler;
-import ggudock.auth.handler.CustomAuthenticationEntryPoint;
+import ggudock.auth.handler.JwtAccessDeniedHandler;
+import ggudock.auth.handler.JwtAuthenticationEntryPoint;
 import ggudock.auth.handler.OAuth2FailureHandler;
 import ggudock.auth.handler.OAuth2SuccessHandler;
 import ggudock.auth.jwt.TokenAuthenticationFilter;
 import ggudock.auth.jwt.TokenExceptionFilter;
 import ggudock.auth.service.CustomOAuth2UserService;
+import ggudock.domain.user.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,34 +53,44 @@ public class SecurityConfig {
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
+                // request 인증, 인가 설정
                 .authorizeHttpRequests(request ->
-                                request.requestMatchers(
-                                                new AntPathRequestMatcher("/"),
-                                                new AntPathRequestMatcher("/auth/success"),
-                                                new AntPathRequestMatcher("/login"),
-                                                new AntPathRequestMatcher("/api/**"),
-                                                new AntPathRequestMatcher("/swagger-ui/**"),
-                                                new AntPathRequestMatcher("/api-docs/**")
+                        request.requestMatchers(
+                                        new AntPathRequestMatcher("/"),
+                                        new AntPathRequestMatcher("/api/auth/success/**"),
+                                        new AntPathRequestMatcher("/login"),
+                                        new AntPathRequestMatcher("/swagger-ui/**"),
+                                        new AntPathRequestMatcher("/api-docs/**"),
+                                        new AntPathRequestMatcher("/api/**")
 
-//                                        new AntPathRequestMatcher("/funding-products/**", "GET"),
-//                                        new AntPathRequestMatcher("/notification/subscribe")
-                                        ).permitAll()
-                                        .anyRequest().authenticated()
+                                ).permitAll()
+                                .requestMatchers(
+                                        new AntPathRequestMatcher("/api/user/**")
+                                ).hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(
+                                        new AntPathRequestMatcher("/api/admin/**")
+                                ).hasRole(Role.ADMIN.name())
+                                .anyRequest().authenticated()
                 )
 
+                // oauth2 설정
                 .oauth2Login(oauth ->
+                        // OAuth2 로그인 성공 후 사용자 정보를 가져올 때의 설정
                         oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
+                                // 로그인 성공 시 핸들러
                                 .successHandler(oAuth2SuccessHandler)
                                 .failureHandler(new OAuth2FailureHandler())
                 )
 
+                // jwt 인증 관련 설정
                 .addFilterBefore(tokenAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new TokenExceptionFilter(), tokenAuthenticationFilter.getClass())
 
+                // 인증 예외 핸들링 401, 403 오류 발생
                 .exceptionHandling((exceptions) -> exceptions
-                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                        .accessDeniedHandler(new CustomAccessDeniedHandler()));
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(new JwtAccessDeniedHandler()));
         return http.build();
     }
 

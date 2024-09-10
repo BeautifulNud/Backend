@@ -10,4 +10,8 @@ import java.util.Optional;
 public interface TokenRepository extends CrudRepository<Token, String> {
 
     Optional<Token> findByAccessToken(String accessToken);
+
+    Optional<Token> findById(String id);
+
+    Boolean existsByAccessToken(String accessToken);
 }

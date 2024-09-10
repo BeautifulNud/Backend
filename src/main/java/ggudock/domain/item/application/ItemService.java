@@ -1,7 +1,5 @@
 package ggudock.domain.item.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ggudock.domain.cart.entity.Cart;
 import ggudock.domain.category.entity.Category;
 import ggudock.domain.company.dto.CompanyDto;
@@ -10,15 +8,8 @@ import ggudock.domain.item.dto.ItemDetailResponse;
 import ggudock.domain.item.entity.Item;
 import ggudock.domain.item.repository.ItemRepository;
 import ggudock.domain.item.strategy.OrderByStrategy;
-import ggudock.domain.user.entity.KakaoProfile;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -55,8 +46,7 @@ public class ItemService {
         return createResponse(itemId);
     }
 
-    public ItemDetailResponse getDetailWithToken(String token, Long itemId) {
-        String email = getEmailByToken(token);
+    public ItemDetailResponse getDetailWithToken(String email, Long itemId) {
         Cart cart = getCart(itemId);
         // 유저 찾고 아이템 아이디로 찾은 Cart 객체랑 맞으면 찜 추가
         return createResponse(itemId);
@@ -106,33 +96,5 @@ public class ItemService {
     private Category getCategory(Long id) {
         return Category.builder().build();
     }
-    private String getEmailByToken(String accessToken) {
 
-        RestTemplate rt = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
-                new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = null;
-
-        response = rt.exchange(
-                "url",
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class
-        );
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        KakaoProfile kakaoProfile = null;
-        try {
-            kakaoProfile = objectMapper.readValue(response.getBody(), KakaoProfile.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return kakaoProfile.getKakaoAccount().getEmail();
-    }
 }

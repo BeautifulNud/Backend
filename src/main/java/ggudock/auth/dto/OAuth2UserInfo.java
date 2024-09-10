@@ -4,7 +4,7 @@ import ggudock.domain.user.entity.Role;
 import ggudock.domain.user.entity.User;
 import ggudock.domain.user.exception.UserException;
 import ggudock.global.exception.constant.ErrorCode;
-import ggudock.util.common.utils.KeyGenerator;
+import ggudock.auth.utils.KeyGenerator;
 import lombok.Builder;
 
 import java.util.Map;
@@ -60,7 +60,6 @@ public record OAuth2UserInfo(
                 .name(name)
                 .email(email)
                 .profile(profile)
-                .userKey(KeyGenerator.generateKey())
                 .role(Role.USER)
                 .build();
     }

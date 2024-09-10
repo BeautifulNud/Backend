@@ -16,20 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserDto userInfo(String userKey) {
-        User user = findByUserKeyOrThrow(userKey);
+    public UserDto userInfo(String eamil) {
+        User user = findByEmailOrThrow(eamil);
         return UserDto.fromEntity(user);
     }
 
     @Transactional
-    public UserDto userEdit(UserEditRequest request, String userKey) {
-        User user = findByUserKeyOrThrow(userKey);
+    public UserDto userEdit(UserEditRequest request, String email) {
+        User user = findByEmailOrThrow(email);
         user.updateUser(request);
         return UserDto.fromEntity(user);
     }
 
-    private User findByUserKeyOrThrow(String userKey) {
-        return userRepository.findByUserKey(userKey)
+    private User findByEmailOrThrow(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER));
     }
 }

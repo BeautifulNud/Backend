@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @RoleUser
     @Operation(summary = "유저 정보", description = "유저의 정보를 받아오기.")
     @GetMapping
     public ResponseEntity<UserDto> userInfo(
@@ -30,8 +29,6 @@ public class UserController {
     }
 
 
-
-    @RoleUser
     @Operation(summary = "유저 수정", description = "유저의 전화번호를 수정한다.")
     @PatchMapping
     public ResponseEntity<UserDto> userEdit(

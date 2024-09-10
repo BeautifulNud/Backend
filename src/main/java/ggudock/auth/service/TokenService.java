@@ -31,9 +31,18 @@ public class TokenService {
         tokenRepository.save(token);
     }
 
+    public Token findByEmailOrThrow(String email){
+        return tokenRepository.findById(email)
+                .orElseThrow(() -> new TokenException(ErrorCode.NOT_FOUND_TOKEN));
+    }
+
     public Token findByAccessTokenOrThrow(String accessToken) {
         return tokenRepository.findByAccessToken(accessToken)
                 .orElseThrow(() -> new TokenException(ErrorCode.TOKEN_EXPIRED));
+    }
+
+    public Boolean checkToken(String accessToken) {
+        return tokenRepository.existsByAccessToken(accessToken);
     }
 
     @Transactional

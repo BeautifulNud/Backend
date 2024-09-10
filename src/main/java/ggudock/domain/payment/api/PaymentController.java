@@ -1,6 +1,6 @@
 package ggudock.domain.payment.api;
 
-import ggudock.config.oauth.utils.SecurityUtil;
+import ggudock.auth.utils.SecurityUtil;
 import ggudock.domain.payment.api.dto.PaymentRequest;
 import ggudock.domain.payment.application.PaymentService;
 import ggudock.domain.payment.application.dto.CancelResponse;
@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,8 +26,9 @@ public class PaymentController {
     @Operation(summary = "토스 결제",description = "결제 정보 저장")
     @PostMapping("{orderId}")
     public ResponseEntity<PaymentResponse> savePayment(@RequestBody PaymentRequest paymentRequest,
-                                                       @PathVariable("orderId") String orderId){
-        return new ResponseEntity<>(paymentService.savePayment(paymentRequest, SecurityUtil.getCurrentName(),orderId),
+                                                       @PathVariable("orderId") String orderId,
+                                                       Authentication authentication){
+        return new ResponseEntity<>(paymentService.savePayment(paymentRequest, SecurityUtil.getCurrentName(authentication),orderId),
                 HttpStatusCode.valueOf(200));
     }
 

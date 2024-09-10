@@ -1,4 +1,4 @@
-package ggudock.util.common.utils;
+package ggudock.auth.utils;
 
 import java.util.UUID;
 
