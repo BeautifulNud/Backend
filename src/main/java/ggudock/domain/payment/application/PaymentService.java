@@ -167,7 +167,7 @@ public class PaymentService {
     }
 
     private User getUser(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
     }
 
     private Payment save(Payment payment) {
@@ -198,7 +198,7 @@ public class PaymentService {
                 .orderId(payment.getOrder().getOrderId())
                 .orderName(payment.getOrder().getItem().getName())
                 .customerEmail(payment.getUser().getEmail())
-                .customerName(payment.getUser().getUsername())
+                .customerName(payment.getUser().getName())
                 .payDate(payment.getPayDate())
                 .payStatus(payment.getPayStatus())
                 .build();

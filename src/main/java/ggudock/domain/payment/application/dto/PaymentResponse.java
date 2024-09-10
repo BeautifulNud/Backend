@@ -29,7 +29,7 @@ public class PaymentResponse {
         this.orderName = payment.getOrder().getItem().getName();
         this.orderId = payment.getOrder().getOrderId();
         this.customerEmail = payment.getUser().getEmail();
-        this.customerName = payment.getUser().getUsername();
+        this.customerName = payment.getUser().getName();
         this.paymentKey = payment.getPaymentKey();
         this.payDate = payment.getPayDate();
         this.payStatus = payment.getPayStatus();

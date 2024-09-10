@@ -1,6 +1,6 @@
 package ggudock.domain.address.api;
 
-import ggudock.config.oauth.entity.UserPrincipal;
+
 import ggudock.config.oauth.utils.SecurityUtil;
 import ggudock.domain.address.api.request.AddressRequest;
 import ggudock.domain.address.application.AddressService;
@@ -11,10 +11,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
