@@ -10,9 +10,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +26,11 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @Operation(summary = "리뷰 저장", description = "정보를 받아 리뷰를 저장한다.")
-    @PostMapping()
-    public ResponseEntity<ReviewResponse> saveReview(@Valid @RequestBody ReviewRequest reviewRequest,
-                                                     Authentication authentication) {
-        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, SecurityUtil.getCurrentName(authentication)),
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ReviewResponse> saveReview(@Valid @RequestPart(value = "reviewRequest") ReviewRequest reviewRequest,
+                                                     @RequestPart(value = "image", required = false) MultipartFile image,
+                                                     Authentication authentication) throws IOException {
+        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, image, SecurityUtil.getCurrentName(authentication)),
                 HttpStatusCode.valueOf(200));
     }
 

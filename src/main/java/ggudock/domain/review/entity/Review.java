@@ -36,12 +36,16 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Builder
-    public Review(String content, float rating, String date, User user, Item item) {
+    public Review(String content, float rating, String date, User user, Item item, String imageUrl) {
         this.content = content;
         this.rating = rating;
         this.date = date;
         this.user = user;
         this.item = item;
+        this.imageUrl = imageUrl;
     }
 }
