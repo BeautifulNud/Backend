@@ -50,3 +50,4 @@ public class CustomerOrder extends BaseTimeEntity {
         this.orderStatus=orderStatus;
     }
 }
+

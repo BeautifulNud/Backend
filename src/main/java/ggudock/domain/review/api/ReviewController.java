@@ -1,6 +1,6 @@
 package ggudock.domain.review.api;
 
-import ggudock.config.oauth.utils.SecurityUtil;
+import ggudock.auth.utils.SecurityUtil;
 import ggudock.domain.review.application.ReviewService;
 import ggudock.domain.review.dto.ReviewRequest;
 import ggudock.domain.review.dto.ReviewResponse;
@@ -11,9 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +23,9 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 저장", description = "정보를 받아 리뷰를 저장한다.")
     @PostMapping()
-    public ResponseEntity<ReviewResponse> saveReview(@Valid @RequestBody ReviewRequest reviewRequest) {
-        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, SecurityUtil.getCurrentName()),
+    public ResponseEntity<ReviewResponse> saveReview(@Valid @RequestBody ReviewRequest reviewRequest,
+                                                     Authentication authentication) {
+        return new ResponseEntity<>(reviewService.saveReview(reviewRequest, SecurityUtil.getCurrentName(authentication)),
                 HttpStatusCode.valueOf(200));
     }
 
@@ -37,9 +37,9 @@ public class ReviewController {
 
     @Operation(summary = "유저의 전체 리뷰 삭제", description = "로그인중인 유저의 전체 리뷰를 삭제한다.")
     @DeleteMapping("/deleteAll-User")
-    public ResponseEntity<?> deleteReviewList() {
-        System.out.println(SecurityUtil.getCurrentName());
-        reviewService.deleteList(SecurityUtil.getCurrentName());
+    public ResponseEntity<?> deleteReviewList(Authentication authentication) {
+        System.out.println(SecurityUtil.getCurrentName(authentication));
+        reviewService.deleteList(SecurityUtil.getCurrentName(authentication));
         return new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
     }
 
@@ -51,8 +51,9 @@ public class ReviewController {
 
     @Operation(summary = "유저별 리뷰 리스트", description = "유저별 최신순 리뷰 리스트를 보여준다")
     @GetMapping("/search-user")
-    public ResponseEntity<Page<ReviewResponse>> getListByUser(@RequestParam(value = "page", defaultValue = "0") int page) {
-        return new ResponseEntity<>(reviewService.getListByUser(page, SecurityUtil.getCurrentName()), HttpStatusCode.valueOf(200));
+    public ResponseEntity<Page<ReviewResponse>> getListByUser(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                              Authentication authentication) {
+        return new ResponseEntity<>(reviewService.getListByUser(page, SecurityUtil.getCurrentName(authentication)), HttpStatusCode.valueOf(200));
     }
 
     @Operation(summary = "최신 날짜순 리뷰 리스트", description = "아이템의 전체 리뷰를 최신 날짜순으로 보여준다.")

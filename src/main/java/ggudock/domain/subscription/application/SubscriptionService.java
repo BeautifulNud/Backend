@@ -323,7 +323,7 @@ public class SubscriptionService {
     }
 
     private User getUser(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
     }
 
     private Page<Subscription> createSubscriptionPageByOn(PageRequest pageRequest, String email) {

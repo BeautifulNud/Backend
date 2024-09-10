@@ -1,5 +1,6 @@
 package ggudock.domain.item.api;
 
+import ggudock.auth.utils.SecurityUtil;
 import ggudock.domain.item.application.ItemService;
 import ggudock.domain.item.dto.ItemDetailResponse;
 import ggudock.domain.item.strategy.OrderByStrategy;
@@ -9,6 +10,7 @@ import ggudock.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,8 @@ public class ItemController {
 
     // 상품 상세보기(토큰 有)
     @GetMapping("/token/{itemId}")
-    public ResponseEntity<ItemDetailResponse> getDetailWithToken(@RequestHeader(value = "Authorization") String token, @PathVariable("itemId") Long itemId) {
-        return new ResponseEntity<>(itemService.getDetailWithToken(token, itemId), HttpStatusCode.valueOf(200));
+    public ResponseEntity<ItemDetailResponse> getDetailWithToken(Authentication authentication, @PathVariable("itemId") Long itemId) {
+        return new ResponseEntity<>(itemService.getDetailWithToken(SecurityUtil.getCurrentName(authentication), itemId), HttpStatusCode.valueOf(200));
     }
 
     // 상품 전체 리스트 가져오기

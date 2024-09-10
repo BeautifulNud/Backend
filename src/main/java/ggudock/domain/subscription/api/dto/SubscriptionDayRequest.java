@@ -1,3 +1,4 @@
+
 package ggudock.domain.subscription.api.dto;
 
 import ggudock.global.validator.customvalid.TitleValid;
@@ -17,3 +18,4 @@ public class SubscriptionDayRequest {
     public SubscriptionDayRequest() {
     }
 }
+

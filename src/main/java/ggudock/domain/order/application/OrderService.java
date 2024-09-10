@@ -128,6 +128,6 @@ public class OrderService {
     }
 
     private User getUser(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_USER));
     }
 }
