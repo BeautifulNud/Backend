@@ -23,9 +23,9 @@ public class CartController {
 
     @Operation(summary = "찜 생성", description = "찜을 저장한다")
     @PostMapping("/{itemId}")
-    public ResponseEntity<?> saveCart(@PathVariable("itemId") Long itemId, Authentication authentication) {
-        cartService.saveCart(SecurityUtil.getCurrentName(authentication),itemId);
-        return new ResponseEntity<>(null, HttpStatusCode.valueOf(204));
+    public ResponseEntity<CartResponse> saveCart(@PathVariable("itemId") Long itemId, Authentication authentication) {
+        CartResponse cartResponse = cartService.saveCart(SecurityUtil.getCurrentName(authentication), itemId);
+        return new ResponseEntity<>(cartResponse, HttpStatusCode.valueOf(204));
     }
 
     @Operation(summary = "찜 삭제", description = "찜을 삭제한다")

@@ -11,9 +11,13 @@ import lombok.Data;
 public class CartResponse {
     Long cartId;
     Long itemId;
+    String email;
 
-    public CartResponse(Cart cart){
-        cartId = cart.getId();
-        itemId = cart.getItem().getId();
+    public static CartResponse of(Cart cart) {
+        return CartResponse.builder()
+                .cartId(cart.getId())
+                .itemId(cart.getItem().getId())
+                .email(cart.getUser().getEmail())
+                .build();
     }
 }

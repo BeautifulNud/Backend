@@ -24,16 +24,19 @@ public class CartService {
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
 
-    public void saveCart(String email, Long itemId) {
+
+    public CartResponse saveCart(String email, Long itemId) {
         User user = getUser(email);
         Item item = getItem(itemId);
         checkCart(email, itemId);
         Cart cart = createCart(user, item);
-        save(cart);
+        Cart save = save(cart);
+
+        return CartResponse.of(save);
     }
 
-    private void checkCart(String email, Long itemId) {
-        if(cartRepository.existsByUser_EmailAndItem_Id(email, itemId)){
+    public void checkCart(String email, Long itemId) {
+        if (cartRepository.existsByUser_EmailAndItem_Id(email, itemId)) {
             throw new BusinessException(ErrorCode.DUPLICATED_CART);
         }
     }
@@ -47,7 +50,7 @@ public class CartService {
     }
 
     public List<CartResponse> getAll(String email) {
-        return createCartList(email).stream().map(CartResponse::new).collect(Collectors.toList());
+        return createCartList(email).stream().map(CartResponse::of).collect(Collectors.toList());
     }
 
     private List<Cart> createCartList(String email) {
@@ -56,10 +59,10 @@ public class CartService {
 
     private CartResponse createCartResponse(Long cartId) {
         Cart cart = getCart(cartId);
-        return new CartResponse(cart);
+        return CartResponse.of(cart);
     }
 
-    private Cart getCart(Long cartId) {
+    public Cart getCart(Long cartId) {
         return cartRepository.findById(cartId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CART));
     }
@@ -73,7 +76,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    private static Cart createCart(User user, Item item) {
+    public static Cart createCart(User user, Item item) {
         return Cart.builder()
                 .user(user)
                 .item(item)
