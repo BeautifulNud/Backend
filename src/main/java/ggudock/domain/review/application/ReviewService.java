@@ -39,7 +39,7 @@ public class ReviewService {
         User user = getUser(email);
         Item item = getItem(reviewRequest.getItemId());
 
-        String filUrl = s3UploadService.upload(image, "images");
+        String filUrl = s3UploadService.upload(image, "reviews/");
 
         Review review = createReview(reviewRequest, item, user, filUrl);
         Review savedReview = reviewRepository.save(review);
@@ -48,7 +48,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review save(Review review) {
+    public Review saveReview(Review review) {
         return reviewRepository.save(review);
     }
 
@@ -70,6 +70,17 @@ public class ReviewService {
         }
 
         reviewRepository.deleteAll(reviewList);
+    }
+
+    @Transactional
+    public void deleteListByItem(Long itemId) {
+        List<Review> reviewList = reviewRepository.findByItem_Id(itemId);
+
+        for (Review review : reviewList) {
+            s3UploadService.fileDelete(review.getImageUrl()); //s3 사진 삭제
+        }
+
+        reviewRepository.deleteAllByItem_Id(itemId);
     }
 
     public Page<ReviewResponse> getListByUser(int page, String email) {
