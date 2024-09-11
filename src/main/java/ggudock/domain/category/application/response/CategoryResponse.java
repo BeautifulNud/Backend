@@ -13,8 +13,10 @@ public class CategoryResponse {
     private String name;
     private String icon;
 
-    public CategoryResponse(Category category) {
-        this.name = category.getName();
-        this.icon = category.getIcon();
+    public static CategoryResponse of(Category category) {
+        return CategoryResponse.builder()
+                .name(category.getName())
+                .icon(category.getIcon())
+                .build();
     }
 }
