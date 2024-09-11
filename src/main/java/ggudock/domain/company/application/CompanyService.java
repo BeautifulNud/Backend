@@ -24,8 +24,8 @@ public class CompanyService {
     @Transactional
     public CompanyResponse saveCompany(CompanyRequest companyRequest) {
         Company company = createCompany(companyRequest);
-        companyRepository.save(company);
-        return getDetail(company.getId());
+        Company save = companyRepository.save(company);
+        return CompanyResponse.of(save);
     }
 
     @Transactional
@@ -39,25 +39,15 @@ public class CompanyService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_COMPANY));
     }
 
+    public CompanyResponse getDetail(Long companyId) {
+        Company company = getCompany(companyId);
+        return CompanyResponse.of(company);
+    }
+
     public Page<CompanyResponse> getCompanyPage(int page) {
         PageRequest pageRequest = createPageRequest(page);
         Page<Company> companyPage = createCompanyPage(pageRequest);
         return createCompanyResponsePage(companyPage);
-    }
-
-    public CompanyResponse getDetail(Long companyId) {
-        return createResponse(companyId);
-    }
-
-    private CompanyResponse createResponse(Long companyId) {
-        Company company = getCompany(companyId);
-        return CompanyResponse.builder()
-                .name(company.getName())
-                .telNumber(company.getTelNumber())
-                .address(company.getAddress())
-                .description(company.getDescription())
-                .holiday(company.getHoliday())
-                .build();
     }
 
     private static Company createCompany(CompanyRequest companyRequest) {
@@ -75,7 +65,7 @@ public class CompanyService {
     }
 
     private static Page<CompanyResponse> createCompanyResponsePage(Page<Company> companyPage) {
-        return companyPage.map(CompanyResponse::new);
+        return companyPage.map(CompanyResponse::of);
     }
 
     private static PageRequest createPageRequest(int page) {

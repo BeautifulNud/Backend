@@ -35,6 +35,7 @@ public enum ErrorCode {
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
 
     DUPLICATED_USER(HttpStatus.CREATED, "이미 존재하는 회원입니다."),
+    DUPLICATED_ITEM(HttpStatus.CREATED, "이미 존재하는 아이템입니다."),
     DUPLICATED_ADDRESS(HttpStatus.CREATED, "이미 저장되어 있는 배송지입니다."),
     DUPLICATED_DATE(HttpStatus.CREATED, "이미 상품 요청된 날짜입니다."), // 가정이 요청
 

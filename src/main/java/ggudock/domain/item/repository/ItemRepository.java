@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findById(Long itemId);
+
+    Boolean existsAllByName(String name);
+
     List<Item> findAllByOrderByViewsDesc();
     @Query("SELECT i FROM Item i ORDER BY SIZE(i.reviewList) DESC")
     List<Item> findByReviewCountDesc();

@@ -11,17 +11,21 @@ import java.time.DayOfWeek;
 @Builder
 @AllArgsConstructor
 public class CompanyResponse {
+    private Long id;
     private String name;
     private String telNumber;
     private String description;
     private String address;
     private DayOfWeek holiday;
 
-    public CompanyResponse(Company company) {
-        this.name = company.getName();
-        this.telNumber = company.getTelNumber();
-        this.description = company.getDescription();
-        this.address = company.getAddress();
-        this.holiday = company.getHoliday();
+    public static CompanyResponse of(Company company) {
+        return CompanyResponse.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .telNumber(company.getTelNumber())
+                .description(company.getDescription())
+                .address(company.getAddress())
+                .holiday(company.getHoliday())
+                .build();
     }
 }

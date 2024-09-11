@@ -40,7 +40,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryList(){
         return categoryRepository.findAll().stream()
-                .map(CategoryResponse::new)
+                .map(CategoryResponse::of)
                 .toList();
     }
 
