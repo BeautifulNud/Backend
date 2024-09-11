@@ -4,15 +4,14 @@ import ggudock.domain.cart.entity.Cart;
 import ggudock.domain.category.entity.Category;
 import ggudock.domain.company.entity.Company;
 import ggudock.domain.review.entity.Review;
-import ggudock.domain.subscription.entity.Subscription;
 import ggudock.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,9 +23,7 @@ public class Item extends BaseTimeEntity {
     private Long id;
 
     @Column(name = "name")
-    @NotNull
     private String name;
-    @NotNull
     private int price;
     private int salePercent;
     private String description;
@@ -37,19 +34,20 @@ public class Item extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Category category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
-    @OneToMany(mappedBy = "item")
-    private List<ItemImage> itemImageList;
-    @OneToMany(mappedBy = "item")
-    private List<Cart> cartList;
-    @OneToMany(mappedBy = "item")
-    private List<Review> reviewList;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<ItemImage> itemImageList = new ArrayList<>();
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Cart> cartList = new ArrayList<>();
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Review> reviewList = new ArrayList<>();
 
     @Builder
-    public Item(Long id, String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company, List<ItemImage> itemImageList, List<Cart> cartList, List<Review> reviewList) {
-        this.id = id;
+    public Item(String name, int price, int salePercent, String description, String plan, float rating, String thumbnail, long views, Category category, Company company) {
         this.name = name;
         this.price = price;
         this.salePercent = salePercent;
@@ -60,9 +58,6 @@ public class Item extends BaseTimeEntity {
         this.views = views;
         this.category = category;
         this.company = company;
-        this.itemImageList = itemImageList;
-        this.cartList = cartList;
-        this.reviewList = reviewList;
     }
 
     public int getSalePrice() {
