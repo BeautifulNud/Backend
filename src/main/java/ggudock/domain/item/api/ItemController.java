@@ -49,6 +49,15 @@ public class ItemController {
         return new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
     }
 
+    // 아이템 가격 변경
+    @Operation(summary = "상품 할인 퍼센트 변경", description = "상품의 할인 퍼센트를 변경한다.")
+    @PatchMapping("/{itemId}")
+    public ResponseEntity<Void> deleteItem(@PathVariable(name = "itemId") Long itemId,
+                                           @RequestParam(name = "salePercent")int salePercent) {
+        itemService.changeSale(itemId, salePercent);
+        return new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
+    }
+
     // 상품 상세보기
     @Operation(summary = "상품 상세보기", description = "상품의 개별 상세 페이지를 반환한다.")
     @GetMapping("/{itemId}")

@@ -71,5 +71,9 @@ public class Item extends BaseTimeEntity {
     public void raiseViews() {
         this.views++;
     }
+
+    public void changeSalePercent(int salePercent) {
+        this.salePercent = salePercent;
+    }
 }
 

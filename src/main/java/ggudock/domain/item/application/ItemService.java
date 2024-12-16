@@ -67,6 +67,12 @@ public class ItemService {
         reviewService.deleteListByItem(itemId);
     }
 
+    @Transactional
+    public void changeSale(Long itemId, int newSalePercent) {
+        Item item = getItem(itemId);
+        item.changeSalePercent(newSalePercent);
+    }
+
     public List<ItemDetailResponse> getList() {
         return itemRepository.findAll().stream()
                 .map(Item::getId)

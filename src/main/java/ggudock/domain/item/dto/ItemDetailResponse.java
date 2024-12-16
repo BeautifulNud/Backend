@@ -31,7 +31,7 @@ public class ItemDetailResponse {
                 .salePrice(item.getSalePrice())
                 .thumbnail(item.getThumbnail())
                 .description(item.getDescription())
-                .view(0)
+                .view(item.getViews())
                 .wish(false)
                 .rating(item.getRating())
                 .category(CategoryResponse.of(item.getCategory()))
